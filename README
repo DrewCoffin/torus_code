@@ -19,3 +19,5 @@ Some notes on stability:
 This code uses numerical methods which have certain criteria for stability. Change timescales in inputs.dat can affect the stability of those methods. The chemistry timescale acts as the main timescale and all other can iterate an integer number of times per chemistry iteration. When adjusting timescales, lower dt is more stable, however it will take more time to run. When hot electrons are varied in azimuth, the chemistry timescale should be ~2000 seconds. Azimuthal transport should not have stability issues. For fast transport, radial transport may need to iterate many times per chemistry iteration. Radial transport iterations must be scaled with Dll and Dll exponent in "inputs.dat". 
 
 ulimit -n 4096 ; to run more than 18x18 processors
+
+Git commit 66610bc has old commit information
