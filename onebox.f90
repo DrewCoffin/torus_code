@@ -362,7 +362,7 @@ subroutine model()
 !    if( vmass .and. mass_loading(mype+1) .gt. 0.0) then   !for Pontius equation
     if( vrad .and. abs(ave_dNL2_dL) .gt. 0.0) then   !for Pontius equation
 !       elecHot_multiplier=elecHot_multiplier*(1.0+0.75*((mass_loading(mype+1)/ave_loading)-1.0))    
-       elecHot_multiplier=elecHot_multiplier*(1.0+1.2*((dNL2_dL(mype+1)/ave_dNL2_dL)-1.0))    
+       elecHot_multiplier=elecHot_multiplier*(1.0+1.3*((dNL2_dL(mype+1)/ave_dNL2_dL)-1.0))    
 !       elecHot_multiplier=elecHot_multiplier*(1.0+2.8*((nl2_tot(mype+1)/ave_nl2_tot)-1.0))    
 !       if (mype .eq. 1) then
 !          write(*,*) 'Hot electrons.....',elecHot_multiplier,mass_loading(mype+1),ave_loading
@@ -976,12 +976,48 @@ subroutine rad_transport(n, nrg, dep, h)
     n%op  =LWRadTransport(nin%op  ,  n%op  , nout%op  , numerical_c_rin, numerical_c_r, numerical_c_rout)
     n%o2p =LWRadTransport(nin%o2p ,  n%o2p , nout%o2p , numerical_c_rin, numerical_c_r, numerical_c_rout)
     n%elec=LWRadTransport(nin%elec,  n%elec, nout%elec, numerical_c_rin, numerical_c_r, numerical_c_rout)
-
+  
+!    nrg%sp  =LWRadTransport(nTin%sp  ,  nrg%sp  , nTout%sp  , numerical_c_rin, numerical_c_r, numerical_c_rout)
+!    nrg%s2p =LWRadTransport(nTin%s2p ,  nrg%s2p , nTout%s2p , numerical_c_rin, numerical_c_r, numerical_c_rout)
+!    nrg%s3p =LWRadTransport(nTin%s3p ,  nrg%s3p , nTout%s3p , numerical_c_rin, numerical_c_r, numerical_c_rout)
+!    nrg%op  =LWRadTransport(nTin%op  ,  nrg%op  , nTout%op  , numerical_c_rin, numerical_c_r, numerical_c_rout)
+!    nrg%o2p =LWRadTransport(nTin%o2p ,  nrg%o2p , nTout%o2p , numerical_c_rin, numerical_c_r, numerical_c_rout)
 !    if (mype .eq. 5) then
 !      print *, nrg%elec, LWRadTransport(nTin%elec,  nrg%elec, nTout%elec, numerical_c_rin, numerical_c_r, numerical_c_rout)
 !    endif
 !    nrg%elec=LWRadTransport(nTin%elec,  nrg%elec, nTout%elec, numerical_c_rin, numerical_c_r, numerical_c_rout)
   endif
+!Improved Euler method
+!  ni%sp   = n%sp  + (nin%sp  - n%sp )*numerical_c_r
+!  ni%s2p  = n%s2p + (nin%s2p - n%s2p)*numerical_c_r 
+!  ni%s3p  = n%s3p + (nin%s3p - n%s3p)*numerical_c_r 
+!  ni%op   = n%op  + (nin%op  - n%op )*numerical_c_r 
+!  ni%o2p  = n%o2p + (nin%o2p - n%o2p)*numerical_c_r 
+!
+!  nrgi%sp   = nrg%sp   + (nTin%sp   - nrg%sp )*numerical_c_r 
+!  nrgi%s2p  = nrg%s2p  + (nTin%s2p  - nrg%s2p)*numerical_c_r 
+!  nrgi%s3p  = nrg%s3p  + (nTin%s3p  - nrg%s3p)*numerical_c_r 
+!  nrgi%op   = nrg%op   + (nTin%op   - nrg%op )*numerical_c_r 
+!!  nrgi%o2p  = nrg%o2p  + (nTin%o2p  - nrg%o2p)*numerical_c_r 
+
+!  ninold=nin
+!  nTinold=nTin
+!
+!  call GetRadNeighbors(ni, nrgi)
+!
+!  n%sp   = n%sp  + .5 * (nin%sp  + ninold%sp - ni%sp - n%sp )*numerical_c_r
+!  n%s2p  = n%s2p + .5 * (nin%s2p + ninold%s2p- ni%s2p- n%s2p)*numerical_c_r
+!  n%s3p  = n%s3p + .5 * (nin%s3p + ninold%s3p- ni%s3p- n%s3p)*numerical_c_r
+!  n%op   = n%op  + .5 * (nin%op  + ninold%op - ni%op - n%op )*numerical_c_r
+!  n%o2p  = n%o2p + .5 * (nin%o2p + ninold%o2p- ni%o2p- n%o2p)*numerical_c_r
+!
+!  nrg%sp   = nrg%sp  + .5 * (nTin%sp  + nTinold%sp  - nrgi%sp - nrg%sp )*numerical_c_r 
+!  nrg%s2p  = nrg%s2p + .5 * (nTin%s2p + nTinold%s2p - nrgi%s2p- nrg%s2p)*numerical_c_r 
+!!  nrg%s3p  = nrg%s3p + .5 * (nTin%s3p + nTinold%s3p - nrgi%s3p- nrg%s3p)*numerical_c_r 
+!  nrg%op   = nrg%op  + .5 * (nTin%op  + nTinold%op  - nrgi%op - nrg%op )*numerical_c_r 
+!  nrg%o2p  = nrg%o2p + .5 * (nTin%o2p + nTinold%o2p - nrgi%o2p- nrg%o2p)*numerical_c_r 
+    !handles all radial transport 
+    !must remove radial loss from F_* and EF_* functions in functions.f90
 
 end subroutine rad_transport
 

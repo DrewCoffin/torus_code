@@ -373,11 +373,11 @@ MODULE DEBUG
     infinity=HUGE(infinity)
     if(x .ne. x .or. abs(x) .gt. infinity) then
       if(.not. HUSH) then
-        print *, x, line, mype
+!        print *, x, line, mype
       endif
       NaNcatchDouble=.true.
       if(mype .eq. 0) then
-       print *, "TAG"
+!        print *, "TAG"
       end if
     end if
     return 

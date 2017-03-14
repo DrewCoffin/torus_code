@@ -9,7 +9,7 @@ MODULE ReadEmis
   subroutine ReadIndices(temp, dens)
     real              ::temp(EMIS_SIZE), dens(EMIS_SIZE)
  
-    call ReadIndex('emisTemp.dat', temp)  !make sure to change character length if filenames change    
+    call ReadIndex('emisTemp.dat', temp)  !make sure to change character lengh if filenames change    
     call ReadIndex('emisDens.dat', dens)      
 
   end subroutine ReadIndices

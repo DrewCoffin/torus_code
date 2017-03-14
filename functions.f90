@@ -239,7 +239,7 @@ MODULE FUNCTIONS
 
     h%elec=(n%sp*h%sp + 2.0*n%s2p*h%s2p + 3.0*n%s3p*h%s3p + n%op*h%op + 2.0*n%o2p*h%o2p) &
            /(n%sp + 2.0*n%s2p + 3.0*n%s3p + n%op + 2.0*n%o2p)
-!    if ( mype .eq. 0 ) print *, h%op, rdist
+   ! print *, h%op, rdist
 
   END SUBROUTINE get_scale_heights
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SPACER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
