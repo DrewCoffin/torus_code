@@ -22,11 +22,16 @@ if [ $good -eq 0 ]
 #  fi
   mkdir "$species"/TEMP
   mv TEMP"$species"*.dat "$species"/TEMP/.
-  mkdir "$species"/INTS
-  mv INTS"$species"*.dat "$species"/INTS/.
+#  mkdir "$species"/INTS
+#  mv INTS"$species"*.dat "$species"/INTS/.
   mkdir "$species"/NL2_
   mv NL2_"$species"*.dat "$species"/NL2_/.
   mkdir "$species"/PUV_
   mv PUV_"$species"*.dat "$species"/PUV_/.
+  if [ $species = $elec ]
+    then
+    mkdir elec/FEH_
+    mv FEH_elec*.dat elec/FEH_/.
+  fi
 fi
 

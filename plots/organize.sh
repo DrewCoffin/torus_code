@@ -40,11 +40,3 @@ cd ../
 ./organizeSpecies.sh o2p
 ./organizeSpecies.sh elec
 
-cd ./data/
-mv FEH*.dat elec/
-cd ./elec/
-mkdir FEH_
-mv FEH*.dat FEH_/
-cd ./FEH_/
-for f in FEH_.0*; do mv "$f" "${f/FEH_.0/FEH_elec0}"; done
-

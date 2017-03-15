@@ -100,6 +100,17 @@ character(len=4) ::quantity, day_char
 
 end subroutine IonOutput3D
 
+SUBROUTINE ElecOutput3D(val, longitude, rdist, day_char, quantity)
+double precision ::sp, s2p, s3p, op, o2p
+real             ::longitude, rdist 
+character(len=4) ::quantity, day_char 
+     
+  open(unit=101, file=''//quantity//'elec'//day_char//'_3D.dat' , status='unknown', position='append')
+  write(101,*) MOD(longitude,360.0), val, rdist
+  close(101)
+
+end subroutine ElecOutput3D
+
 
 SUBROUTINE spacer3D(day_char, quantity)
 character(len=4) ::quantity, day_char 
@@ -124,6 +135,15 @@ character(len=4) ::quantity, day_char
   close(106)
 
 end subroutine spacer3D
+
+SUBROUTINE Elecspacer3D(day_char, quantity)
+character(len=4) ::quantity, day_char 
+     
+  open(unit=101, file=''//quantity//'elec'//day_char//'_3D.dat', status='unknown', position='append')
+  write(101,*) ""
+  close(101)
+
+end subroutine Elecspacer3D
 
 subroutine OtherOutput(val, longitude, day_char, quantity)
 real             ::longitude, val

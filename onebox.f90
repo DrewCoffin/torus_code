@@ -511,15 +511,15 @@ subroutine model()
                  call OtherOutput(mass_loading(mype+1)/ave_loading, longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'LOAD')
                  call OtherOutput3D(mass_loading(mype+1), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'LOAD')
                  call OtherOutput3D(v_ion, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'VSUB')
-                 call OtherOutput3D(nrgy%Puv_sp, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'PUV_')
+!                 call OtherOutput3D(nrgy%Puv_sp, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'PUV_')
                  call OtherOutput(real(miscOutput), longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'MOUT')
-                 call OtherOutput3D(real(n%fh), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'FEH_')
+                 call ElecOutput3D(real(n%fh), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'FEH_')
 !		print *, real(n%fh), rdist, longitude+((j+1)/(LNG_GRID+1))*360.0, day_char
                  if( j .eq. LNG_GRID ) call spacer3D(day_char, 'DENS')
                  if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'LOAD')
                  if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'VSUB')
  !                if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'PUV_')
-                 if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'FEH_')
+                 if( j .eq. LNG_GRID ) call Elecspacer3D(day_char, 'FEH_')
               endif 
               if(OUTPUT_NL2) then
                 call IonElecOutput(nl2%sp, nl2%s2p, nl2%s3p, nl2%op, nl2%o2p,nl2%sp+nl2%s2p+nl2%s3p+nl2%op+nl2%o2p,&

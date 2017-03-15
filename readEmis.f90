@@ -43,7 +43,7 @@ MODULE ReadEmis
    
     do i=1, EMIS_SIZE
       do j=1, EMIS_SIZE
-        emis(j, i)=emis(j,i)/(1.60217646e-12)
+        emis(j, i)=emis(j,i)/(1.60217646e-12) !erg/eV
       end do
     end do
 !    print *, emis(1,1), emis(1,101) , emis(101,1), emis(101, 101) 
@@ -55,7 +55,7 @@ subroutine InitIndependentRates(ind)
   character(len=20)   ::loc
 
   call ReadIndices(ind%emis_temp, ind%emis_dens) !reads in the temp and density tables for interpolating the emission tables
-! The above function should be unneccesary since values are now calculated rather than searched in a table. Calculation is faster thant searching.
+! The above function should be unnecessary since values are now calculated rather than searched in a table. Calculation is faster than searching.
 
 !Read in all emission tables. These tables are used to determine power radiated by the torus
   loc='emisSp.dat'
