@@ -51,8 +51,8 @@ end
 pro read_data,nfil,img,pfl,pfl2,pflr
 ;-----------------------------------------------------------
 
-nlng = 18
-nr = 24
+nlng = 30
+nr = 36
 
 ;sp-------
 filetype='MIXR'
@@ -205,7 +205,7 @@ w = window(dimensions=[600,1200])
 ind=1
 
 ;plot time series
-for i = 4,24,4 do begin
+for i = 4,36,4 do begin
    t = findgen(cnt)*ts
    L = pflr(i)
    whL = where(pflr eq L) 
@@ -223,7 +223,7 @@ for i = 4,24,4 do begin
    
    f = FFT_powerspectrum(pfl(whL),ts,FREQ=freq)
    wh = where(2*!pi*freq gt 0.05)
-   ps1=plot(2*!pi*freq(wh),f(wh),/ylog,layout=[1,6,ind],/current,$
+   ps1=plot(2*!pi*freq(wh),f(wh),/ylog,layout=[1,9,ind],/current,$
            margin=[0.12,0.21,0.05,0.1],$
            xrange=[min(2*!pi*freq(wh)),max(2*!pi*freq(wh))/6],yrange=[1e-5,0.1],$
            font_size=12,/xsty,name='S+')

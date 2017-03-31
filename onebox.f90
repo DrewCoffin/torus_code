@@ -850,7 +850,6 @@ subroutine az_transport(n, nrg)
     n%o=LaxWendroff(nleft%o, n%o, nright%o, cn, cn, cn)
     n%op=LaxWendroff(nleft%op, n%op, nright%op, cleft, c, cright)
     n%o2p=LaxWendroff(nleft%o2p, n%o2p, nright%o2p, cleft, c, cright)
-!double precision function LaxWendroff(left, center, right, uleft, u, uright)
 
     nrg%sp=LaxWendroff(nTleft%sp, nrg%sp, nTright%sp, cleft, c, cright)
     nrg%s2p=LaxWendroff(nTleft%s2p, nrg%s2p, nTright%s2p, cleft, c, cright)

@@ -118,13 +118,3 @@ for i in range(0, len(dll)) :
   #out.close()
 
 os.popen("gnuplot plot.gnu")
-#print x
-#print y
-#print z
-#makePlot(x, y, z) #<-BROKEN
-    #GetData(E, sig)
-    #GetOutput(output)
-    #ModifyOutput(output, O)
-    #calculate chi squared(O, E, sig)
-    #output chi squared, s, dll in proper order for plotting
-#plot heatmap of chi squared
