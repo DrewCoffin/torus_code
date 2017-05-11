@@ -13,10 +13,10 @@
 5.5                   hot electron temperature power law
 0.0                   lag_const subcorotational plasma speed in km/s (Refer to v_ion in ParallelVariables.f90)
 0.8                   neutral_amp
-249.0                 neutral_t0
+229.0                 neutral_t0
 25.0                  neutral_width
-0.0                   hote_amp
-269.0                 hote_t0
+0.02                  hote_amp
+249.0                 hote_t0
 45.5                  hote_width
 400                   number of days for the run
 1.0                   number of outputs per day
