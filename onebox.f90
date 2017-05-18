@@ -55,10 +55,10 @@ subroutine model()
   type(density)       ::n, ni, np, nl2, nl2e
   real                ::const
   type(temp)          ::T, Ti, Tp
-  real                ::Te0, Ti0, Teh0
+  double precision    ::Te0, Ti0, Teh0, ntroptot
   type(height)        ::h, hi
   type(r_ind)         ::ind
-  type(nT)            ::nrg, nTi, nTp
+  type(nT)            ::nrg, nTi, nTp, ntrop
   integer             ::i, j, k
   real                ::var, n_height
   type(nu)            ::v, vi
@@ -300,6 +300,8 @@ subroutine model()
 
   nl2=NLsquared(n, T, nl2e, h)
 
+  ntrop = entropy(n, T, h, ntroptot)
+
   mass_loading(mype+1)=1e-33 !set to arbitarily small value
   ave_loading=1e-33
 
@@ -384,8 +386,8 @@ subroutine model()
  !   elecHot_multiplier=elecHot_multiplier*(1.0+0.5*((mass_loading(mype+1)/ave_loading)-1.0))
 
     n%fh  = fehot_const * (1.0 + hote_amp * var)*elecHot_multiplier
-    if (n%fh .gt. 4.0e-3) then  !limit max f_eh                   
-       n%fh = 4.0e-3
+    if (n%fh .gt. 8.0e-3) then  !limit max f_eh                   
+       n%fh = 8.0e-3
     endif
     
 !    do j = 1,12
@@ -489,7 +491,7 @@ subroutine model()
 
     call energyBudget(n, h, T, dep, ind, ft, lat, v, nrgy)
 
-    if (nint(output_it)+1 .eq. i .and. (OUTPUT_MIXR .or. OUTPUT_DENS .or. OUTPUT_TEMP .or. OUTPUT_INTS)) then !Output at set intervals when OUTPUT_MIX is true (from debug.f90)
+    if (nint(output_it)+1 .eq. i .and. (OUTPUT_MIXR .or. OUTPUT_DENS .or. OUTPUT_TEMP .or. OUTPUT_INTS .or. OUTPUT_PUV .or. OUTPUT_ENTR)) then !Output at set intervals when OUTPUT_MIX is true (from debug.f90)
         miscOutput=mass_loading(mype+1)
         day = (i-1.0)*dt/86400
         write (x1, '(I4.4)') file_num
@@ -511,6 +513,7 @@ subroutine model()
                  call OtherOutput(mass_loading(mype+1)/ave_loading, longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'LOAD')
                  call OtherOutput3D(mass_loading(mype+1), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'LOAD')
                  call OtherOutput3D(v_ion, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'VSUB')
+		 call OtherOutput3D(real(ntroptot), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'TENT')
 !                 call OtherOutput3D(nrgy%Puv_sp, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'PUV_')
                  call OtherOutput(real(miscOutput), longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'MOUT')
                  call ElecOutput3D(real(n%fh), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'FEH_')
@@ -518,6 +521,7 @@ subroutine model()
                  if( j .eq. LNG_GRID ) call spacer3D(day_char, 'DENS')
                  if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'LOAD')
                  if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'VSUB')
+                 if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'TENT')
  !                if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'PUV_')
                  if( j .eq. LNG_GRID ) call Elecspacer3D(day_char, 'FEH_')
               endif 
@@ -563,6 +567,13 @@ subroutine model()
                    longitude, rdist, day_char, 'PUV_')
                  !call OtherOutput3D(nrgy%Puv_sp, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'PUV_')
                 if( j .eq. LNG_GRID ) call spacer3D(day_char, 'PUV_')
+              end if
+              if(OUTPUT_ENTR) then 
+                 call IonElecOutput(ntrop%sp, ntrop%s2p, ntrop%s3p, ntrop%op, ntrop%o2p, ntrop%elec, & longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'ENTR')
+                 call IonElecOutput3D(ntrop%sp, ntrop%s2p, ntrop%s3p, ntrop%op, ntrop%o2p, ntrop%elec, & longitude, rdist, day_char, 'ENTR')
+!                 call IonElecOutput(nl2e%sp, nl2e%s2p, nl2e%s3p, nl2e%op, nl2e%o2p, nl2e%elec, & longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'ENTR')
+!                 call IonElecOutput3D(nl2e%sp, nl2e%s2p, nl2e%s3p, nl2e%op, nl2e%o2p, nl2e%elec, & longitude, rdist, day_char, 'ENTR')
+                if( j .eq. LNG_GRID ) call spacer3D(day_char, 'ENTR')
               end if
 !              open(unit=200, file='feh'//day_char//'.dat', status='unknown', position='append')
 !              open(unit=210, file='vr'//day_char//'.dat', status='unknown', position='append')

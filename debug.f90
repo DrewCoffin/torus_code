@@ -32,6 +32,7 @@ MODULE DEBUG
   logical             ::OUTPUT_INTS = .not. .true. !Variable to control outputs for plotting
   logical             ::OUTPUT_NL2  = .true. !Variable to control outputs for plotting
   logical             ::OUTPUT_PUV  = .true. !Variable to control outputs for plotting
+  logical             ::OUTPUT_ENTR  = .true. !Variable to control outputs for plotting
                                   ! true means plot, false means silence outputs
   logical             ::moving_Io = .not. .true. !turns the motion of Io on and off 
 !  logical             ::test_pattern = .not. .true. !allows for testing azimuthal source patterns

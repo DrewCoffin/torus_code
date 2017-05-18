@@ -201,7 +201,7 @@ subroutine transport_species(nl2b, nl2, dll, lp, lflux, nl2e, tbout, tbin, nl2ou
 
 end subroutine transport_species
 
-function NLsquared(n, T, NLsquarede, h)!nr, tr, nl2, nl2e, nar
+function NLsquared(n, T, NLsquarede, h)
 
   integer            ::numBin, i, mid
   parameter(numBin=61)
@@ -277,6 +277,71 @@ function NLsquared(n, T, NLsquarede, h)!nr, tr, nl2, nl2e, nar
 
   return
 end function NLsquared
+
+function entropy(n, T, h, ntroptot)
+
+  integer            ::numBin, i, mid
+  parameter(numBin=61)
+  type(density)      ::nar(numBin),n
+  type(nT)           ::entropy
+  type(temp)         ::T
+  type(height)       ::h
+  double precision   ::dtheta, theta, max_theta, lat, gammaval, ntroptot
+  double precision   ::latwght, z(numBin), dz
+  logical            ::isNaN
+
+  max_theta=30
+  dtheta=dTOr*2.0*max_theta/(numBin-1)
+  gammaval = 5.0/3.0
+
+  entropy%op =0.0
+  entropy%o2p=0.0
+  entropy%sp =0.0
+  entropy%s2p=0.0
+  entropy%s3p=0.0
+  entropy%elec=0.0
+  ntroptot = 0.0
+
+  mid=(numbin-1)/2
+  z(mid)=0.0
+
+  !Geometry of flux tube
+  do i=1, mid
+    lat=i*dtheta
+    dz=rdist*cos(lat)*sqrt(1.0+3.0*(sin(lat)**2))*dtheta
+    z(mid+i)=z(mid+i-1)+dz*Rj
+    z(mid-i)=z(mid+i) 
+  end do
+
+  do i=0, numBin-1
+    lat=abs((-max_theta*dTOr+i*dtheta))
+    latwght=cos(lat)**7
+    entropy%op  =entropy%op + n%op**(1/gammaval) * latwght *exp(-((z(i)/h%op )**2))
+    entropy%o2p =entropy%o2p+n%o2p**(1/gammaval) * latwght *exp(-((z(i)/h%o2p )**2))
+    entropy%sp  =entropy%sp +n%sp**(1/gammaval) * latwght *exp(-((z(i)/h%sp )**2))
+    entropy%s2p =entropy%s2p+n%s2p**(1/gammaval) * latwght *exp(-((z(i)/h%s2p )**2))
+    entropy%s3p =entropy%s3p+n%s3p**(1/gammaval) * latwght *exp(-((z(i)/h%s3p )**2))
+    entropy%elec =entropy%elec+(n%fh*n%elec)**(1/gammaval) * latwght *exp(-((z(i)/h%elec )**2))
+
+!   ntroptot = (n%op*exp(-((z(i)/h%op )**2)) + n%o2p*exp(-((z(i)/h%o2p )**2)) + n%sp*exp(-((z(i)/h%sp )**2)) + n%s2p*exp(-((z(i)/h%s2p )**2)) + n%s3p*exp(-((z(i)/h%s3p )**2)) + n%fh*n%elec*exp(-((z(i)/h%elec )**2)))**(1/gammaval) * latwght
+!   if(mype .eq. 0) print *, n%op, latwght
+  end do
+!  isNaN=NaNcatch(nar(i+1)%sp, 111+i, mype) 
+!  if(mype .eq. 0) print *, i, z(i), h%sp
+    latwght=(dtheta)*4.0*PI*((Rj*1.0e5)**3.0)*(rdist**4.0)
+!    latwght=rdist**4
+    entropy%op  =entropy%op  *latwght * (T%op) **(1/gammaval)
+    entropy%o2p =entropy%o2p *latwght * (T%o2p) **(1/gammaval)
+    entropy%sp  =entropy%sp  *latwght * (T%sp) **(1/gammaval)
+    entropy%s2p =entropy%s2p *latwght * (T%s2p) **(1/gammaval)
+    entropy%s3p =entropy%s3p *latwght * (T%s3p) **(1/gammaval)
+    entropy%elec =entropy%elec *latwght * (T%elecHot) **(1/gammaval)
+
+!  ntroptot = ntroptot * latwght* (T%op + T%o2p + T%sp + T%s2p + T%s3p + T%elecHot) **(1/gammaval)
+   ntroptot = entropy%op + entropy%o2p + entropy%sp + entropy%s2p + entropy%s3p + entropy%elec
+
+  return
+end function entropy
 
 subroutine iterate_NL2(nl2, nl2e, n, T, h)
   type(density)      ::n, nl2, nl2e
