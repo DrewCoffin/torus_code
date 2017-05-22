@@ -17,24 +17,24 @@
  $$ Neutral Temp.........   229.0000    
  $$ Variation Duration...   25.00000    
  $$ Hot Elec Variation...  0.0000000E+00
- $$ Hot Elec Temp........   249.0000    
+ $$ Hot Elec Temp........   269.0000    
  $$ Variation Duration...   45.50000    
  
- $$ Run Length(days)....   25.00000    
+ $$ Run Length(days)....   250.0000    
  $$ Outputs per day.....   1.000000    
  
  $$--------------------------------
  $$ IN-CODE ENERGY BUDGET
  $$--------------------------------
- $$ ionized S............  0.3692972    
- $$ ionized O............  0.1030643    
- $$ charge exchange S....  0.1295482    
- $$ charge exchange O....  0.2093486    
- $$ equil with ehot......  7.6032400E-02
- $$ total in.............  0.8872907    
- $$ puv..................   7.053584    
- $$ fast/ena.............  0.3412320    
- $$ transport............   1.298205    
- $$ total out............   2.344795    
- $$ in/out...............  0.3784086    
+ $$ ionized S............  0.3944868    
+ $$ ionized O............  0.1214810    
+ $$ charge exchange S....  0.1239329    
+ $$ charge exchange O....  0.2275782    
+ $$ equil with ehot......  0.2244623    
+ $$ total in.............   1.091941    
+ $$ puv..................   12.11826    
+ $$ fast/ena.............  0.5116904    
+ $$ transport............   1.433434    
+ $$ total out............   3.156950    
+ $$ in/out...............  0.3458849    
  

@@ -28,8 +28,8 @@ if [ $good -eq 0 ]
   mv NL2_"$species"*.dat "$species"/NL2_/.
   mkdir "$species"/PUV_
   mv PUV_"$species"*.dat "$species"/PUV_/.
-  mkdir "$species"/ENTR
-  mv ENTR"$species"*.dat "$species"/ENTR/.
+#  mkdir "$species"/ENTR
+# mv ENTR"$species"*.dat "$species"/ENTR/.
   if [ $species = $elec ]
     then
     mkdir elec/FEH_
