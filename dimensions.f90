@@ -3,7 +3,7 @@ MODULE DIMENSIONS
   integer  ::LNG_GRID, RAD_GRID, NUMPES
 
   parameter(LNG_GRID=10)
-  parameter(RAD_GRID=16)
+  parameter(RAD_GRID=10)
   parameter(NUMPES=LNG_GRID*RAD_GRID)
 
 END MODULE
