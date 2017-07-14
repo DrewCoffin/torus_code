@@ -134,7 +134,7 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
 !  if( vrad ) v_ion=1.0-abs(rdist-6.8)
-  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 2.5*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 2.5*exp(-(rdist-8.0)**2/(0.5**2))!1.0-abs(rdist-6.8)
 !  if( vrad ) v_ion= 2.5*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
 
   if( .not. vrad .and. .not. vmass) v_ion=1.05
@@ -171,8 +171,8 @@ subroutine model()
   n%op = 400.0 * test_multiplier* (rdist/6.0)**(-8.0)
   n%o2p=  40.0 * test_multiplier* (rdist/6.0)**(-2.0)
 
-  n%s=0.0!50.0 * test_multiplier* (rdist/6.0)**source_exp
-  n%o=0.0!100.0 * test_multiplier* (rdist/6.0)**source_exp
+  n%s=50.0!50.0 * test_multiplier* (rdist/6.0)**source_exp
+  n%o=100.0!100.0 * test_multiplier* (rdist/6.0)**source_exp
 
 
   Te0 = 5.0
@@ -386,8 +386,8 @@ subroutine model()
  !   elecHot_multiplier=elecHot_multiplier*(1.0+0.5*((mass_loading(mype+1)/ave_loading)-1.0))
 
     n%fh  = fehot_const * (1.0 + hote_amp * var)*elecHot_multiplier
-    if (n%fh .gt. 8.0e-3) then  !limit max f_eh                   
-       n%fh = 8.0e-3
+    if (n%fh .gt. 4.0e-3) then  !limit max f_eh                   
+       n%fh = 4.0e-3
     endif
     
 !    do j = 1,12

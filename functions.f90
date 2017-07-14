@@ -966,7 +966,7 @@ end function az_loss
     elseif ( (tgt-t) >= (t-tlt) .and. (n-nlt) > (ngt-n) ) then
       interpolate= table(ti,ni+1) - (ngt-n)*nslope + (t-tlt)*tslope
     elseif ( (t-tlt) > (tgt-t) .and. (t-tlt) > (tgt-t) ) then
-      interpolate= table(ti+1,ni+1) - (ngt-n)*nslope - (tlt-t)*tslope
+      interpolate= table(ti+1,ni+1) - (ngt-n)*nslope - (tgt-t)*tslope
     endif
 
   end function interpolate
