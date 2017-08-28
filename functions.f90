@@ -560,7 +560,7 @@ end function az_loss
        lambda_ei= 24 - log(sqrt(ne)/Te)     
 !       print *, "CASE: 2"  , "    Lambda:", lambda_ei
      elseif(Te<(cond1*zi)) then
-       lambda_ei= 30 - log((ni*(zi**4))/((Ti**3)*mui*mui))/2     
+       lambda_ei= 16 - log((ni*(zi**4)*mui*mui)/(Ti**3))/2     
 !       print *, "CASE: 3"  , "    Lambda:", lambda_ei
      else
 !       print *, "Coulomb case not found: lambda_ei in functions.f90" !fix

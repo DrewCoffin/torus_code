@@ -134,7 +134,7 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
 !  if( vrad ) v_ion=1.0-abs(rdist-6.8)
-  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 2.5*exp(-(rdist-8.0)**2/(0.5**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 2.5*exp(-(rdist-8.5)**2/(0.5**2))!1.0-abs(rdist-6.8)
 !  if( vrad ) v_ion= 2.5*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
 
   if( .not. vrad .and. .not. vmass) v_ion=1.05
@@ -192,7 +192,7 @@ subroutine model()
 
 !  net_source=(source/((10.0**radgrid)*source_mult))
 
-  n%elec = (n%sp + n%op + 2 * (n%s2p + n%o2p) + 3 * n%s3p) !* (1.0 - n%protons)
+  n%elec = (n%sp + n%op + 2 * (n%s2p + n%o2p) + 3 * n%s3p) !/ (1.0 - n%protons)
   n%elecHot = n%fh * n%elec! / (1.0-n%fh)
 !  n%elecHot = 0.01 * n%elec
 
@@ -363,6 +363,7 @@ subroutine model()
 
 !    if( vmass .and. mass_loading(mype+1) .gt. 0.0) then   !for Pontius equation
     if( vrad .and. abs(ave_dNL2_dL) .gt. 0.0) then   !for Pontius equation
+      print *, "average flux content gradient: ", abs(ave_dNL2_dL)
 !       elecHot_multiplier=elecHot_multiplier*(1.0+0.75*((mass_loading(mype+1)/ave_loading)-1.0))    
       elecHot_multiplier=elecHot_multiplier*(1.0+1.2*((dNL2_dL(mype+1)/ave_dNL2_dL)-1.0))    
 !        elecHot_multiplier=elecHot_multiplier*(1.0+2.8*((nl2_tot(mype+1)/ave_nl2_tot)-1.0))    
