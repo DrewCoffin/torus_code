@@ -729,7 +729,7 @@ end function az_loss
     T%op = nrg%op / n%op
     T%o2p = nrg%o2p / n%o2p
     T%elec = nrg%elec / n%elec
-
+    
   end subroutine update_temp
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SPACER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   real function ft_rad(lat, T, ind, h)
