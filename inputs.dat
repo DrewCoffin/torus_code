@@ -6,7 +6,7 @@
 1.70                  o_to_s
 0.003                  hot electron fraction
 5.0                   fraction exponent
-3.5e-7                Dll
+5.5e-7                Dll
 4.5                   Dll exponent
 0                     transport (days) #obsolete
 40.0                  tehot hot electron temp in eV
@@ -18,7 +18,7 @@
 0.003                 hote_amp
 279.0                 hote_t0
 45.5                  hote_width
-10                    number of days for the run
+200                   number of days for the run
 1.0                   number of outputs per day
 0.00                  s value for upwind scheme
 0.030                 initial radial velocity (km/s)

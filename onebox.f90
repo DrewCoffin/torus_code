@@ -134,7 +134,7 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
 !  if( vrad ) v_ion=1.0-abs(rdist-6.8)
-  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 2.5*exp(-(rdist-6.8)**2/(0.5**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 3.0*exp(-(rdist-9.0)**2/(1.0**2))!1.0-abs(rdist-6.8)
 !  if( vrad ) v_ion= 2.5*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
 
   if( .not. vrad .and. .not. vmass) v_ion=1.05
@@ -805,7 +805,9 @@ subroutine Grid_transport(n, T, nrg, dep, h, nl2, nl2e)
   do i=1, aztrans_it
     call az_transport(n, nrg)
   enddo
+  !print *, "Pre-update density, temp = ", n%sp, T%sp
   call update_temp(n, nrg, T)
+  !print *, "Post-update density, temp = ", n%sp, T%sp
   isNaN=NaNcatch(n%sp, -1, mype)
   nl2=NLsquared(n, T, nl2e, h)
 !  if(mype .eq. 0) print*, n%sp, n%s2p, n%s3p, n%op, n%o2p
@@ -819,7 +821,7 @@ subroutine Grid_transport(n, T, nrg, dep, h, nl2, nl2e)
   call iterate_NL2(nl2, nl2e, n, T, h)
 
   T%sp=(nl2e%sp/(nl2%sp*rdist**2))**(3.0/4.0)
-  if(mype .eq. 0) print *, "T%sp, nl2e%sp, nl2%sp = ", T%sp, nl2e%sp, nl2%sp
+  !if(mype .eq. 0) print *, "T%sp, nl2e%sp, nl2%sp = ", T%sp, nl2e%sp, nl2%sp
   nrg%sp=n%sp*T%sp
   T%s2p=(nl2e%s2p/(nl2%s2p*rdist**2))**(3.0/4.0)
   nrg%s2p=n%s2p*T%s2p

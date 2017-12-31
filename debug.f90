@@ -34,7 +34,7 @@ MODULE DEBUG
   logical             ::OUTPUT_PUV  = .true. !Variable to control outputs for plotting
   logical             ::OUTPUT_ENTR  = .not. .true. !Variable to control outputs for plotting
                                   ! true means plot, false means silence outputs
-  logical             ::moving_Io = .not. .true. !turns the motion of Io on and off 
+  logical             ::moving_Io = .true. !turns the motion of Io on and off 
 !  logical             ::test_pattern = .not. .true. !allows for testing azimuthal source patterns
   logical             ::test_pattern = .true. !allows for testing azimuthal source patterns
   logical             ::UseLaxWendroff = .true. !Uses Lax Wendroffd scheme to handle azimuthal transport (fast, less diffusive))
@@ -356,10 +356,14 @@ MODULE DEBUG
     if(x .ne. x .or. abs(x) .gt. infinity) then
       if(.not. HUSH) then
         !print *, x, line, mype
+        print *, "NaN encountered"
+        stop
       endif
       NaNcatchReal=.true.
       if(mype .eq. 0) then
         !print *, "TAG"
+        print *, "NaN encountered"
+        stop
       end if
     end if
     return 
@@ -375,10 +379,14 @@ MODULE DEBUG
     if(x .ne. x .or. abs(x) .gt. infinity) then
       if(.not. HUSH) then
         !print *, x, line, mype
+        print *, "NaN encountered"
+        stop
       endif
       NaNcatchDouble=.true.
       if(mype .eq. 0) then
         !print *, "TAG"
+        print *, "NaN encountered"
+        stop
       end if
     end if
     return 
