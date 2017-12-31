@@ -10,3 +10,5 @@ plots/**/*.dat
 **/*.o
 gifs/**
 **/*.mp4
+zarchive/**
+SysIVFFTs/**
