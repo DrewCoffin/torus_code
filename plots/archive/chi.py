@@ -83,6 +83,7 @@ sig=[]
 [E, sig]=getData(E, sig)
 outputs=[]
 filenames=["elecDens", "op", "o2p", "sp", "s2p", "s3p", "NL2", "elecTemp", "Tot"] 
+#print(filenames)
 for name in filenames: open(name+'.dat', 'w').close()
 out=open("chi.dat", 'a')
 with open("../../gatherData.py", 'r') as runfile:
@@ -95,21 +96,22 @@ dll1=content[40].strip('dllArray=[').rstrip(']\n')
 dll=dll1.split(', ')
 for i in range(len(dll)):
   dll[i] = float(dll[i])
-#print s
-#print dll
+#print(s)
+#print(dll)
 for i in range(0, len(dll)) :
   for j in range(0, len(s)) :
     run="s="+str(s[j])+":dll="+str(dll[i])
     if(not os.path.exists("./"+run)): print "BAD", run
     O=copy.deepcopy(E)
     outputs=[]
-    #print O
+#    print(filenames)
     if(getOutput(outputs, run) and os.path.exists("./"+run)):
-      #print outputs
+      #print(filenames)
       O=modifyOutput(outputs, O) 
       chis=calculateChi(O, E, sig)
       chis.append((sum(chis)-chis[0])/83.0)
-      #print chis
+#      print(filenames)
+      print(chis)
 #      print O, '\n', E, '\n', "+++++++++++++++++++++++++++++++++++++++++++++"
       output(s[j], dll[i], chis, filenames)
   outputSpace(filenames)
@@ -117,4 +119,4 @@ for i in range(0, len(dll)) :
   #out.write('\n')
   #out.close()
 
-os.popen("gnuplot plot.gnu")
+#os.popen("gnuplot plot.gnu")

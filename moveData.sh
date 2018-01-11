@@ -15,7 +15,7 @@ mv FEH*.dat plots/.
 
 cd plots
 
-#  python radData.py $1 $2
+  python radData.py $1 $2
 
   mv DENS*.dat data/.
   mv MIXR*.dat data/.
