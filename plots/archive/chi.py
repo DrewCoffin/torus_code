@@ -107,7 +107,7 @@ for i in range(0, len(dll)) :
 #    print(filenames)
     if(not getOutput(outputs, run)): print "BAD Location"
     if(getOutput(outputs, run) and os.path.exists("./"+run)):
-      print(filenames)
+#      print(filenames)
       O=modifyOutput(outputs, O) 
       chis=calculateChi(O, E, sig)
       chis.append((sum(chis)-chis[0])/83.0)
