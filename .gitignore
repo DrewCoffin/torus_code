@@ -11,4 +11,5 @@ plots/**/*.dat
 gifs/**
 **/*.mp4
 zarchive/**
+plots/archive/s=**
 SysIVFFTs/**

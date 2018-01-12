@@ -23,7 +23,7 @@ def getData(E, sig):
 
 def getOutput(output,run):
   paths=[]
-  day=100
+  day=150
   pathParams=[["elec", "DENS"], ["op", "MIXR"], ["o2p","MIXR"], ["sp","MIXR"], ["s2p","MIXR"], ["s3p","MIXR"], ["elec", "NL2_"], ["elec", "TEMP"]]
   for i in range(0,len(pathParams)):
     path="./"+run+"/"+pathParams[i][0]+"/"+pathParams[i][1]+"/"+pathParams[i][1]+pathParams[i][0]+"0"+str(day)+"rad.dat"
@@ -105,13 +105,14 @@ for i in range(0, len(dll)) :
     O=copy.deepcopy(E)
     outputs=[]
 #    print(filenames)
+    if(not getOutput(outputs, run)): print "BAD Location"
     if(getOutput(outputs, run) and os.path.exists("./"+run)):
-      #print(filenames)
+      print(filenames)
       O=modifyOutput(outputs, O) 
       chis=calculateChi(O, E, sig)
       chis.append((sum(chis)-chis[0])/83.0)
 #      print(filenames)
-      print(chis)
+#      print(chis)
 #      print O, '\n', E, '\n', "+++++++++++++++++++++++++++++++++++++++++++++"
       output(s[j], dll[i], chis, filenames)
   outputSpace(filenames)
@@ -119,4 +120,4 @@ for i in range(0, len(dll)) :
   #out.write('\n')
   #out.close()
 
-#os.popen("gnuplot plot.gnu")
+os.popen("gnuplot plot.gnu")

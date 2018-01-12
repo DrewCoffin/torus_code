@@ -1,12 +1,12 @@
 6.0	              inner boundary
 10.25                 outer boundary
 12.0                  radial distance where chemical reactions are neglected
-0.25e28
+6.0e28
 -14.5
 1.70                  o_to_s
 0.002
 3.5
-1.0e-7
+18.0e-7
 3.5
 0                     transport (days) #obsolete
 40.0                  tehot hot electron temp in eV
@@ -18,7 +18,7 @@
 0.003                 hote_amp
 279.0                 hote_t0
 45.5                  hote_width
-50                    number of days for the run
+150                   number of days for the run
 1.0                   number of outputs per day
 0.00                  s value for upwind scheme
 0.030                 initial radial velocity (km/s)
