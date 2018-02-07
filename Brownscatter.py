@@ -2,17 +2,9 @@ import numpy as np
 import scipy.interpolate as itp
 import matplotlib.pyplot as plt
 
-read = np.loadtxt('./Brown.dat', delimiter=', ', skiprows = 1)
-a = []
-l = []
-w = []
-f = []
-for i in range(len(read)):
-	a.append(read[i][0])
-        l.append(read[i][1])
-        w.append(read[i][2])
-        f.append(read[i][3])
-#print(a)
+read = np.genfromtxt('./Brown.dat', delimiter=', ', skiprows = 1)
+
+a,l,w,f = read[:,0], read[:,1], read[:,2], read[:,3]
 
 fig, axarr = plt.subplots(1,3, figsize=(10,3))
 
