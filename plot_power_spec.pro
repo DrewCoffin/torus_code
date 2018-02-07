@@ -225,7 +225,7 @@ for i = 3,12,3 do begin
    wh = where(2*!pi*freq gt 0.05)
    ps1=plot(2*!pi*freq(wh),f(wh),/ylog,layout=[1,9,ind],/current,$
            margin=[0.12,0.21,0.05,0.1],$
-           xrange=[min(2*!pi*freq(wh)),max(2*!pi*freq(wh))/6],yrange=[1e-5,0.1],$
+           xrange=[min(2*!pi*freq(wh)),max(1*!pi*freq(wh))/6],yrange=[1e-5,0.1],$
            font_size=12,/xsty,name='S+')
    ps1.title = 'L = '+strmid(strtrim(string(L),2),0,4)
    ps1.ytitle='Power'
@@ -244,8 +244,8 @@ for i = 3,12,3 do begin
 endfor   
    l = legend(target=[ps1,ps3])
    ps1.xtitle = 'Frequency (rad/day)'
-   t = text(0.2,0.001,'$\lambda_{IV}$',/data,orientation=90,font_size=16)
-   t = text(0.14,0.0001,'$43 days$',/data,orientation=90,font_size=16)
+   t = text(0.20,0.001,'$\lambda_{IV}$',/data,orientation=90,font_size=16)
+   t = text(0.16,0.0001,'$43 days$',/data,orientation=90,font_size=16)
    t = text(0.8,0.95,'S$^{+}$',/normal,font_size=18)
    t.Save,'fft.pdf'
 video.cleanup
