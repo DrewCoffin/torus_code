@@ -25,5 +25,5 @@ cbar_ax = fig.add_axes([0.88, 0.15, 0.03, 0.7])
 cbar = plt.colorbar(cax=cbar_ax)
 cbar.set_label('Frequency (rad per day)')
 
-plt.savefig('Brownscatter.svg')
+plt.savefig('Brownscatter.png')
 plt.show()

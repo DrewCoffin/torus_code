@@ -134,7 +134,7 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
 !  if( vrad ) v_ion=1.0-abs(rdist-6.8)
-  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 3.8*exp(-(rdist-7.6)**2/(0.8**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 2.0*exp(-(rdist-7.8)**2/(1.0**2))!1.0-abs(rdist-6.8)
 !  if( vrad ) v_ion= 2.5*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
 
   if( .not. vrad .and. .not. vmass) v_ion=1.05
@@ -318,7 +318,20 @@ subroutine model()
 !----------------------time dependent neutral source rate-------------------------------------------------------------------------------
     var =exp(-((tm-neutral_t0)/neutral_width)**2)
 
-  !  net_source = net_source0*(1.0 + neutral_amp*var) !Ubiquitous source
+  !  net_source = net_source0*(1.0 + neutral_amp*var) 
+
+  ! 20% of source at Io, 80% uniform
+
+
+!    if( moving_Io ) then
+!      if( mype .eq. int(Io_loc*LNG_GRID/torus_circumference) )then
+!        net_source = .2*LNG_GRID*net_source0*(1.0+neutral_amp*var)
+!      else
+!        net_source = .8*net_source0*(1.0+neutral_amp*var)
+!      endif
+!    endif
+
+!  source concentrated at Io
     if( moving_Io ) then
       if( mype .eq. int(Io_loc*LNG_GRID/torus_circumference) )then
         net_source = LNG_GRID*net_source0*(1.0+neutral_amp*var)
@@ -1483,5 +1496,4 @@ subroutine GetRadRightNeighbors(n, nrg, h)
 end subroutine GetRadRightNeighbors
 
 END PROGRAM Onebox
-
 

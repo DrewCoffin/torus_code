@@ -7,7 +7,7 @@
  $$ Hot Elec Fraction....  2.0000001E-03
  $$ Transport............  0.0000000E+00
  $$ Hot Elec Temp........   40.00000    
- $$ Subcorotation........   2.368231    
+ $$ Subcorotation........   1.211138    
  $$ Sys 3 Hot Elec Frac..  0.3000000    
  $$ Sys 4 Hot Elec Amp...  0.4000000    
  $$ Sys 4 Speed..........   1.050000    
@@ -20,21 +20,21 @@
  $$ Hot Elec Temp........   279.0000    
  $$ Variation Duration...   45.50000    
  
- $$ Run Length(days)....   150.0000    
- $$ Outputs per day.....   8.000000    
+ $$ Run Length(days)....   200.0000    
+ $$ Outputs per day.....   1.000000    
  
  $$--------------------------------
  $$ IN-CODE ENERGY BUDGET
  $$--------------------------------
- $$ ionized S............  0.5776919    
- $$ ionized O............  0.1499659    
- $$ charge exchange S....  0.6955973    
- $$ charge exchange O....  0.6603438    
- $$ equil with ehot...... -2.4816439E-02
- $$ total in.............   2.058783    
- $$ puv..................   3.478641    
- $$ fast/ena.............  0.3470924    
- $$ transport............   1.194340    
- $$ total out............   1.758848    
- $$ in/out...............   1.170529    
+ $$ ionized S............  0.2226857    
+ $$ ionized O............  5.1149644E-02
+ $$ charge exchange S....  0.5147591    
+ $$ charge exchange O....  0.3924143    
+ $$ equil with ehot...... -8.2727931E-03
+ $$ total in.............   1.172736    
+ $$ puv..................   1.203316    
+ $$ fast/ena.............  0.2100144    
+ $$ transport............  0.5915124    
+ $$ total out............  0.8767340    
+ $$ in/out...............   1.337619    
  
