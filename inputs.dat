@@ -3,22 +3,22 @@
 12.0                  radial distance where chemical reactions are neglected
 6.0e28		      source rate           
 -14.5		      source exponent
-1.70                  o_to_s
+2.00                  o_to_s
 0.002                 fhote
 3.5                   fh exponent
-18.0e-7               dll0
-3.5                   dll exp
+3.5e-7                dll0
+4.5                   dll exp
 0                     transport (days) #obsolete
-40.0                  tehot hot electron temp in eV
+42.0                  tehot hot electron temp in eV
 5.5                   hot electron temperature power law
 0.0                   lag_const subcorotational plasma speed in km/s (Refer to v_ion in ParallelVariables.f90)
-1.2                   neutral_amp
+0.0                   neutral_amp
 249.0                 neutral_t0
 25.0                  neutral_width
-0.003                 hote_amp
+0.00                  hote_amp
 279.0                 hote_t0
 45.5                  hote_width
-200                   number of days for the run
+450                   number of days for the run
 1.0                   number of outputs per day
 0.00                  s value for upwind scheme
 0.030                 initial radial velocity (km/s)

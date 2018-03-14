@@ -51,8 +51,8 @@ end
 pro read_data,nfil,img,pfl,pfl2,pflr
 ;-----------------------------------------------------------
 
-nlng = 16 
-nr = 16
+nlng = 12 
+nr = 12
 
 ;sp-------
 filetype='MIXR'
