@@ -1,21 +1,21 @@
 6.0	              inner boundary
 10.25                 outer boundary
 12.0                  radial distance where chemical reactions are neglected
-6.0e28		      source rate           
+3.0e28		      source rate           
 -14.5		      source exponent
 2.00                  o_to_s
 0.002                 fhote
 3.5                   fh exponent
-3.5e-7                dll0
+6.0e-7                dll0
 4.5                   dll exp
 0                     transport (days) #obsolete
 42.0                  tehot hot electron temp in eV
 5.5                   hot electron temperature power law
 0.0                   lag_const subcorotational plasma speed in km/s (Refer to v_ion in ParallelVariables.f90)
-0.0                   neutral_amp
+1.2                   neutral_amp
 249.0                 neutral_t0
 25.0                  neutral_width
-0.00                  hote_amp
+0.003                 hote_amp
 279.0                 hote_t0
 45.5                  hote_width
 450                   number of days for the run

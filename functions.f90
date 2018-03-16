@@ -544,7 +544,7 @@ end function az_loss
     lambda_ee = 23.5-.5*log(ne*sqrt(Te**(-5.0)))-sqrt((1.0e-5) + (((log(Te)-2.0)**2.0)/16.0))
   end function lambda_ee
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SPACER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!From NRL plasma formulary rev 2007 pg. 34
+!From NRL plasma formulary rev 2016 pg. 34
   real function lambda_ei(ne,Te,ni,Ti,zi,mui)
     double precision  ::ne, ni
     double precision  ::Te, Ti
@@ -560,8 +560,8 @@ end function az_loss
        lambda_ei= 24 - log(sqrt(ne)/Te)     
 !       print *, "CASE: 2"  , "    Lambda:", lambda_ei
      elseif(Te<(cond1*zi)) then
-       lambda_ei= 30 - log((ni*(zi**4))/((Ti**3)*mui*mui))/2 
-       !lambda_ei= 16 - log((ni*(zi**4)*mui*mui)/(Ti**3))/2     
+       !lambda_ei= 30 - log((ni*(zi**4))/((Ti**3)*mui*mui))/2 
+       lambda_ei= 16 - log((ni*(zi**4)*mui*mui)/(Ti**3))/2     
 !       print *, "CASE: 3"  , "    Lambda:", lambda_ei
      else
 !       print *, "Coulomb case not found: lambda_ei in functions.f90" !fix
