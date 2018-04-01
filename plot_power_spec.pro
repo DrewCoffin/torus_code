@@ -51,8 +51,8 @@ end
 pro read_data,nfil,img,pfl,pfl2,pflr
 ;-----------------------------------------------------------
 
-nlng = 12 
-nr = 12
+nlng = 16 
+nr = 16
 
 ;sp-------
 filetype='MIXR'
@@ -186,7 +186,7 @@ stream = video.addvideostream(xsz, ysz, framerate)
 
 cnt = 0
 ts = 1
-for i = 250,450,ts do begin
+for i =  50,200,ts do begin
    w = window(window_title='torus',dimensions=[xsz,ysz],margin=0,$
               buffer=1)
    
