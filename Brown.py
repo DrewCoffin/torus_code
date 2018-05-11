@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 read = np.genfromtxt('./Brown.dat', delimiter=', ', skiprows = 3)
 
 a,l,w,f = read[:,0], read[:,1], read[:,2], read[:,3]
-nca, ncl, ncw = 18, 9, 9 
+nca, ncl, ncw = 21, 17, 16
 
 fig, axarr = plt.subplots(3,1, figsize=(14,3))
 

@@ -13,3 +13,5 @@ gifs/**
 zarchive/**
 plots/archive/s=**
 SysIVFFTs/**
+*.pdf
+*~
