@@ -16,31 +16,25 @@ def numzeros(i):
     return 3 - int(base)
 
 def getdens(output, spec, runloc, dim): 
-     maxday = 100
+     maxday = 20
      denvals = []
-     for i in range(10, maxday):
+     for i in range(1, maxday):
           dayden = []
           path = './' + runloc + '/' + spec + '/DENS/DENS' + spec + numzeros(i)*'0' + str(i) + '_3D.dat'
           if( not os.path.isfile(path) ): return 0
           with open(path) as datafile:
                data = [next(datafile) for x in xrange(dim)]  
-               #print data[3].split()
                datalines = [data[i].split() for i in range(len(data))]
-               #print datalines
                for j in range(len(datalines)):
                     dayden.append(float(datalines[j][1])) 
-               #print dayden
           denvals.append(max(dayden))
      return denvals  
 
 lng, rad = getdim()
 #print lng, rad
 output = []
-specarr = ['sp', 's2p', 's3p', 'op', 'o2p', 'elec']
-densarr = getdens(output, 'sp', 'plots/data', lng)
-#          data = csv.reader(f[0:dim], delimiter=' ')  
-print densarr
-
-#Find maximum density value
+specs = ['sp', 's2p', 's3p', 'op', 'o2p', 'elec']
+output = [getdens(output, specs[i], 'plots/data', lng) for i in range(len(specs))]
+print output
 
 #Plot max density array
