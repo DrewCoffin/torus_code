@@ -92,12 +92,12 @@ s1=content[35].strip('sourceArray=[').rstrip(']\n')
 s=s1.split(', ')
 for i in range(len(s)):
   s[i] = float(s[i])
-dll1=content[40].strip('dllArray=[').rstrip(']\n')
+dll1=content[39].strip('dllArray=[').rstrip(']\n')
 dll=dll1.split(', ')
 for i in range(len(dll)):
   dll[i] = float(dll[i])
-#print(s)
-#print(dll)
+print(s)
+print(dll)
 for i in range(0, len(dll)) :
   for j in range(0, len(s)) :
     run="s="+str(s[j])+":dll="+str(dll[i])
@@ -105,7 +105,7 @@ for i in range(0, len(dll)) :
     O=copy.deepcopy(E)
     outputs=[]
 #    print(filenames)
-    if(not getOutput(outputs, run)): print "BAD Location"
+    if(not getOutput(outputs, run)): print "BAD Location", run
     if(getOutput(outputs, run) and os.path.exists("./"+run)):
 #      print(filenames)
       O=modifyOutput(outputs, O) 

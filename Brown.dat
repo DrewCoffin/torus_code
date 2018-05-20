@@ -1,6 +1,6 @@
-!!!! Amplitude, Center, Width, Frequency !!!!
-
-!!! Constant Amplitude, then L-shell, then FWHM !!!
+#### Amplitude, Center, Width, Frequency !!!!
+#
+#### Constant Amplitude, then L-shell, then FWHM !!!
 3.0, 6.6, 0.4, .330
 3.0, 6.6, 0.45, .370
 3.0, 6.6, 0.5, .390

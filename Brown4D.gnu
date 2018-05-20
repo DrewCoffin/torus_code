@@ -1,10 +1,7 @@
 set terminal jpeg
-set output 'Browncontour.jpeg'
-set key off
-set title "Brown subcorotation profile on System IV frequency"
-# set autoscale cbfix
-set dgrid3d
-set contour
+set output 'Brown4D.jpeg'
+set title "Brown subcorotation profile effect on System IV frequency"
+#set autoscale cbfix
 set xlabel "Amplitude"
 set ylabel "L-shell"
 set zlabel "FWHM"

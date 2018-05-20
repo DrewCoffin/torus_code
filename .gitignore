@@ -12,6 +12,7 @@ gifs/**
 **/*.mp4
 zarchive/**
 plots/archive/s=**
+plots/archive/dlla=**
 SysIVFFTs/**
 *.pdf
 *~
