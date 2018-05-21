@@ -17,18 +17,20 @@ cd plots
 
   python radData.py $1 $2
 
+#  echo DENS*.dat | xargs -0 mv -t data/.
+#  echo MIXR*.dat | xargs -0 mv -t data/.
   mv DENS*.dat data/.
   mv MIXR*.dat data/.
-  mv TEMP*.dat data/.
+#  mv TEMP*.dat data/.
 #  mv INTS*.dat data/.
   mv NL2_*.dat data/.
   mv LOAD*.dat data/.
   mv MOUT*.dat data/.
   mv PUV*.dat data/.
   mv VSUB*.dat data/.
-  mv FEH*.dat data/.
+#  mv FEH*.dat data/.
 #  mv ENTR*.dat data/.
-#  rm intensity*.dat
+  rm intensity*.dat
 
   ./organize.sh
 
