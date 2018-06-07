@@ -134,7 +134,7 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
 !  if( vrad ) v_ion=1.0-abs(rdist-6.8)
-  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 3.0*exp(-(rdist-7.5)**2/(1.00**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 1.5*exp(-(rdist-6.7)**2/(0.80**2))!1.0-abs(rdist-6.8)
 !  if( vrad ) v_ion= 2.5*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
 
   if( .not. vrad .and. .not. vmass) v_ion=1.05
@@ -178,7 +178,7 @@ subroutine model()
   Te0 = 5.0
   Ti0 = 70.0 
   Teh0= tehot*(rdist/6.0)**tehot_alpha
-  if(Teh0 .gt. 400.0) Teh0=400.0
+  !if(Teh0 .gt. 400.0) Teh0=400.0
   fehot_const= fehot_const*(rdist/6.0)**fehot_exp
   n%fh=fehot_const
 !  trans = 4.62963e-7

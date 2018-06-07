@@ -127,7 +127,7 @@ c = image(arr>minarr,xarr,yarr,/buffer,/current,rgb_table=33,axis_style=3,$
 cb = colorbar(target=c,range=[min(arr(wh)),max(arr(wh))],orientation=1,$
              position=[0.85,0.15,0.88,0.85],textpos=1,font_size=14)
 cb.title=filetype+' '+spec
-cb.title='S+ Mixing Ratio'
+cb.title='S+ Power Output'
 
 print,max(arr),min(arr)
 

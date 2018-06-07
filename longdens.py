@@ -35,7 +35,7 @@ def getdens(output, days, spec, runloc, dim): #finds the max density per day
      return denvals  
 
 lng, rad = getdim()
-maxday = 500 
+maxday = 600 
 #print lng, rad
 days = range(1, maxday)
 output = []

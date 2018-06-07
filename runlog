@@ -1,40 +1,40 @@
- Source correction coefficient :   3.6207482E-02
+ Source correction coefficient :   2.9422630E-02
  AVERAGE VALUES
  $$--------------------------------
  $$ INPUT PARAMETERS
  $$--------------------------------
- $$ Source Rate..........  3.0000000E+28
- $$ Hot Elec Fraction....  2.0000001E-03
+ $$ Source Rate..........  1.9999999E+28
+ $$ Hot Elec Fraction....  3.0000000E-03
  $$ Transport............  0.0000000E+00
  $$ Hot Elec Temp........   42.00000    
- $$ Subcorotation........   1.366198    
+ $$ Subcorotation........   1.747565    
  $$ Sys 3 Hot Elec Frac..  0.3000000    
  $$ Sys 4 Hot Elec Amp...  0.4000000    
  $$ Sys 4 Speed..........   1.050000    
  
  $$ GAUSSIAN SOURCE CHANGE VARIABLES
- $$ Neutral Variation....  0.0000000E+00
+ $$ Neutral Variation....  0.8000000    
  $$ Neutral Temp.........   249.0000    
  $$ Variation Duration...   25.00000    
- $$ Hot Elec Variation...  0.0000000E+00
+ $$ Hot Elec Variation...  2.0000001E-03
  $$ Hot Elec Temp........   279.0000    
  $$ Variation Duration...   45.50000    
  
- $$ Run Length(days)....   50.00000    
+ $$ Run Length(days)....   200.0000    
  $$ Outputs per day.....   1.000000    
  
  $$--------------------------------
  $$ IN-CODE ENERGY BUDGET
  $$--------------------------------
- $$ ionized S............  0.4170133    
- $$ ionized O............  0.1039675    
- $$ charge exchange S....  0.1997615    
- $$ charge exchange O....  0.2956246    
- $$ equil with ehot...... -4.3166816E-02
- $$ total in.............  0.9732001    
- $$ puv..................   9.156248    
- $$ fast/ena.............  0.3609515    
- $$ transport............  0.8969765    
- $$ total out............   1.830194    
- $$ in/out...............  0.5317471    
+ $$ ionized S............  0.4362699    
+ $$ ionized O............  0.1228329    
+ $$ charge exchange S....  0.1570041    
+ $$ charge exchange O....  0.2675326    
+ $$ equil with ehot......  8.7112725E-02
+ $$ total in.............   1.070752    
+ $$ puv..................   9.921780    
+ $$ fast/ena.............  0.3012694    
+ $$ transport............   1.304958    
+ $$ total out............   2.226338    
+ $$ in/out...............  0.4809477    
  
