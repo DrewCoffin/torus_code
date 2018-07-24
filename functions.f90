@@ -228,9 +228,10 @@ MODULE FUNCTIONS
     ms = 32.0 * mp
     mo = 16.0 * mp
  
-    sc_const = 1.6e-19
+    sc_const = 1.6e-19 ! J/eV
 
     h%sp  = sqrt(2.0*T%sp *sc_const*(1.0+1.0 *T%elec/T%sp )/(3.0*ms))/(1000.0*omega)
+    !print *, h%sp
     h%s2p = sqrt(2.0*T%s2p *sc_const*(1.0+2.0 *T%elec/T%s2p )/(3.0*ms))/(1000.0*omega)
     h%s3p = sqrt(2.0*T%s3p *sc_const*(1.0+3.0 *T%elec/T%s3p )/(3.0*ms))/(1000.0*omega)
 !    h%s4p = sqrt(2.0*T%s4p *sc_const*(1+4 *T%elec/T%s4p )/(3.0*ms))/(1000.0*omega)

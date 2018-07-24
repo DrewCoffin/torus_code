@@ -10,5 +10,5 @@ plot 'sp.dat' using 3:2 title 'S+', \
      's3p.dat' using 3:2 title 'S3+', \
      'op.dat' using 3:2 title 'O+', \
      'o2p.dat' using 3:2 title 'O2+', \
-     'hote.dat' using 3:2 title 'Hot e-', \
-     'tot.dat' using 3:2 title 'Total'
+     'elec.dat' using 3:2 title 'e-' #, \
+     #'tot.dat' using 3:2 title 'Total'

@@ -51,8 +51,8 @@ end
 pro read_data,nfil,img,pfl,pfl2,pflr
 ;-----------------------------------------------------------
 
-nlng = 16 
-nr = 16
+nlng = 12 
+nr = 12
 
 ;sp-------
 filetype='MIXR'
@@ -205,7 +205,7 @@ w = window(dimensions=[600,1200])
 ind=1
 
 ;plot time series
-for i = 3,12,3 do begin
+for i = 3,11,4 do begin
    t = findgen(cnt)*ts
    L = pflr(i)
    whL = where(pflr eq L) 

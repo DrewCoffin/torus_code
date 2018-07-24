@@ -1,3 +1,9 @@
+#Syntax:
+
+#Three system arguments. First two specify the day range.
+#Third sysarg is whether the run is completed (1) or in process (0).
+#Example call is: python mixplot.py 50 250 0 (plot days 50 to 250 of the currently running data).
+
 #Read data files
 import os
 import sys
@@ -19,11 +25,14 @@ def numzeros(i):
      else: 
           return 0
 
-def getval(output, days, spec, runloc, dim): #finds the max mixing ratio per day
+def getval(output, days, spec, runloc, dim, runstat): #finds the max mixing ratio per day
      longval = []
      for i in days:
           dayarr = []
-          path = './' + runloc + '/' + spec + '/MIXR/MIXR' + spec + numzeros(i)*'0' + str(i) + '_3D.dat'
+          if( runstat ):
+               path = './' + runloc + '/' + spec + '/MIXR/MIXR' + spec + numzeros(i)*'0' + str(i) + '_3D.dat'
+          else:
+               path = './MIXR' + spec + numzeros(i)*'0' + str(i) + '_3D.dat'
           if( not os.path.isfile(path) ): return 0
           with open(path) as datafile:
                data = [next(datafile) for x in xrange(dim)] #reads first dim-th lines
@@ -35,20 +44,16 @@ def getval(output, days, spec, runloc, dim): #finds the max mixing ratio per day
      return longval
 
 lng, rad = getdim()
-#lng = 12
-#rad = 12
-#maxday = 200 
-#print lng, rad
 days = range(int(sys.argv[1]), int(sys.argv[2]))
 output = []
 specs = ['sp', 's3p'] #'s2p', 's3p', 'op', 'o2p', 'elec']
-output = [getval(output, days, specs[i], 'plots/data', lng) for i in range(len(specs))]
+output = [getval(output, days, specs[i], 'plots/data', lng, int(sys.argv[3])) for i in range(len(specs))]
 #print output
 
 #Plot peak angle
 
 #plt.subplot(231)
-plt.title('Peak Mixing Ratio locations')
+plt.title('Peak Mixing ratio location')      
 plt.xlabel('Days')
 plt.ylabel('System III Angle')
 plt.scatter(days, output[0], marker='^', c = 'red', label = specs[0])

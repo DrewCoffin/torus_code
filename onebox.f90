@@ -134,7 +134,7 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
 !  if( vrad ) v_ion=1.0-abs(rdist-6.8)
-  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 1.5*exp(-(rdist-6.7)**2/(0.80**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 3.0*exp(-(rdist-7.0)**2/(1.0**2))!1.0-abs(rdist-6.8)
 !  if( vrad ) v_ion= 2.5*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
 
   if( .not. vrad .and. .not. vmass) v_ion=1.05
@@ -365,7 +365,7 @@ subroutine model()
     if( vrad .and. abs(ave_dNL2_dL) .gt. 0.0) then   !for Pontius equation
       !print *, "average flux content gradient: ", abs(ave_dNL2_dL)
 !       elecHot_multiplier=elecHot_multiplier*(1.0+0.75*((mass_loading(mype+1)/ave_loading)-1.0))    
-      elecHot_multiplier=elecHot_multiplier*(1.0+1.2*((dNL2_dL(mype+1)/ave_dNL2_dL)-1.0))    
+      elecHot_multiplier=elecHot_multiplier*(1.0+0.8*((dNL2_dL(mype+1)/ave_dNL2_dL)-1.0))   
 !        elecHot_multiplier=elecHot_multiplier*(1.0+2.8*((nl2_tot(mype+1)/ave_nl2_tot)-1.0))    
 !       if (mype .eq. 1) then
 !          write(*,*) 'Hot electrons.....',elecHot_multiplier,mass_loading(mype+1),ave_loading
@@ -387,8 +387,8 @@ subroutine model()
  !   elecHot_multiplier=elecHot_multiplier*(1.0+0.5*((mass_loading(mype+1)/ave_loading)-1.0))
 
     n%fh  = fehot_const * (1.0 + hote_amp * var)*elecHot_multiplier
-    if (n%fh .gt. 4.0e-3) then  !limit max f_eh                   
-       n%fh = 4.0e-3
+    if (n%fh .gt. 8.0e-3) then  !limit max f_eh                   
+       n%fh = 8.0e-3
     endif
     
 !    do j = 1,12
@@ -812,7 +812,7 @@ subroutine Grid_transport(n, T, nrg, dep, h, nl2, nl2e)
   nl2=NLsquared(n, T, nl2e, h)
 !  if(mype .eq. 0) print*, n%sp, n%s2p, n%s3p, n%op, n%o2p
 !  if(mype .eq. 0) print*, nl2%sp, nl2%s2p, nl2%s3p, nl2%op, nl2%o2p
-  isNaN=NaNcatch(nl2%sp, 0, mype)
+  !isNaN=NaNcatch(nl2%sp, 0, mype)
   do i=1, radtrans_it
     call transport_nl2(nl2, nl2e, dll0, dlla)
 !    if(mype .eq. 0) print *, i 
@@ -838,7 +838,7 @@ subroutine Grid_transport(n, T, nrg, dep, h, nl2, nl2e)
 !  T%op=(nl2e%op/(nl2%op*rdist**2))**(3/4)
 !  T%o2p=(nl2e%o2p/(nl2%o2p*rdist**2))**(3/4)
 
-  isNaN=NaNcatch(nl2%sp, 10, mype)
+  !isNaN=NaNcatch(nl2%sp, 10, mype)
 !  if(mype .eq. 0) print*, n%sp, n%s2p, n%s3p, n%op, n%o2p
 !  if(mype .eq. 0) print*, ""
   n%elec=(n%sp + 2.0*n%s2p + 3.0*n%s3p + n%op + 2.0*n%o2p)/(1.0-n%protons) 
