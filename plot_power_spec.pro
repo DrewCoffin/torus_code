@@ -55,7 +55,7 @@ nlng = 12
 nr = 12
 
 ;sp-------
-filetype='MIXR'
+filetype='PUV_'
 spec = 'sp'
 
 i=nfil
@@ -80,8 +80,8 @@ pfl = [pfl,val(wh)]
 
 
 ;s3p-------
-filetype='MIXR'
-spec = 's3p'
+filetype='PUV_'
+spec = 'op' 
 
 read_output,filetype,spec,tm,nlng,nr,lng,val,rad
 
@@ -186,7 +186,7 @@ stream = video.addvideostream(xsz, ysz, framerate)
 
 cnt = 0
 ts = 1
-for i =  50,200,ts do begin
+for i =  40,300,ts do begin
    w = window(window_title='torus',dimensions=[xsz,ysz],margin=0,$
               buffer=1)
    
@@ -205,7 +205,7 @@ w = window(dimensions=[600,1200])
 ind=1
 
 ;plot time series
-for i = 3,11,4 do begin
+for i = 2,8,2  do begin
    t = findgen(cnt)*ts
    L = pflr(i)
    whL = where(pflr eq L) 
@@ -225,7 +225,7 @@ for i = 3,11,4 do begin
    wh = where(2*!pi*freq gt 0.05)
    ps1=plot(2*!pi*freq(wh),f(wh),/ylog,layout=[1,9,ind],/current,$
            margin=[0.12,0.21,0.05,0.1],$
-           xrange=[min(2*!pi*freq(wh)),max(2*!pi*freq(wh))/6],yrange=[1e-5,0.1],$
+           xrange=[min(2*!pi*freq(wh)),max(2*!pi*freq(wh))/1],yrange=[1e-5,0.1],$
            font_size=12,/xsty,name='S+')
    ps1.title = 'L = '+strmid(strtrim(string(L),2),0,4)
    ps1.ytitle='Power'
@@ -238,7 +238,7 @@ for i = 3,11,4 do begin
 
    f = FFT_powerspectrum(pfl2(whL),ts,FREQ=freq)
    wh = where(2*!pi*freq gt 0.05)
-   ps3=plot(2*!pi*freq(wh),f(wh),':',/overplot,name='S+++')
+   ps3=plot(2*!pi*freq(wh),f(wh),':',/overplot,name='O+')
 
    ind = ind+1
 endfor   

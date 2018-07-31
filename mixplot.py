@@ -11,14 +11,14 @@ import numpy as np
 import math as m
 import matplotlib.pyplot as plt
 
-def getdim():
+def getdim(): #gets dimensions of latest or current run
      with open("do", 'r') as runfile:
           content = runfile.readlines()
      lng = int(content[2].strip('lng=').rstrip('\n'))
      rad = int(content[3].strip('rad=').rstrip('\n'))
      return lng, rad
 
-def numzeros(i):
+def numzeros(i): #right number of zeros in the filename
      if i < 1000:
           base =  m.log(i)/m.log(10)
           return 3 - int(base)
@@ -44,12 +44,14 @@ def getval(output, days, spec, runloc, dim, runstat): #finds the max mixing rati
      return longval
 
 lng, rad = getdim()
-days = range(int(sys.argv[1]), int(sys.argv[2]))
+#days = np.arange(int(sys.argv[1])/2., int(sys.argv[2])/2., .5) #this line is necessary if using a partial day timestep for proper graph labelling
+#intdays = range(int(sys.argv[1]), int(sys.argv[2])) #feeds in integer time step for the file naming scheme
+days = range(int(sys.argv[1]), int(sys.argv[2])) #feeds in integer time step for the file naming scheme
 output = []
 specs = ['sp', 's3p'] #'s2p', 's3p', 'op', 'o2p', 'elec']
-output = [getval(output, days, specs[i], 'plots/data', lng, int(sys.argv[3])) for i in range(len(specs))]
+output = [getval(output, days, specs[i], 'plots/data', lng, int(sys.argv[3])) for i in range(len(specs))] #generates table of peak locations per time step
 #print output
-
+#print len(days), len(output[0])
 #Plot peak angle
 
 #plt.subplot(231)

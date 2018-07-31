@@ -134,7 +134,7 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
 !  if( vrad ) v_ion=1.0-abs(rdist-6.8)
-  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 3.0*exp(-(rdist-7.0)**2/(1.0**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 3.0*exp(-(rdist-7.2)**2/(1.0**2))!1.0-abs(rdist-6.8)
 !  if( vrad ) v_ion= 2.5*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
 
   if( .not. vrad .and. .not. vmass) v_ion=1.05
@@ -294,7 +294,7 @@ subroutine model()
   call get_scale_heights(h, T, n)
 
   output_it = 0 !This variable determine when data is output. 
-  Io_loc=0      !Io's location in the torus
+  Io_loc=0!mod(Io_loc-(dt*v_Io), torus_circumference)      !Io's location in the torus
   sys4_loc=(110.0/360.0)*torus_circumference    !The location of the sys4 hot electron population
   file_num=0    !Output files are numbered so they can be assembled as a animated visualization (refer to scripts)
 
@@ -319,18 +319,28 @@ subroutine model()
     var =exp(-((tm-neutral_t0)/neutral_width)**2)
 
   !  net_source = net_source0*(1.0 + neutral_amp*var) !Ubiquitous source
+    !if( moving_Io ) then
+    !  if( mype .eq. int(Io_loc*LNG_GRID/torus_circumference) )then
+    !    net_source = LNG_GRID*net_source0*(1.0+neutral_amp*var)
+    !  else
+    !    if( i .eq. 1 ) then
+    !      net_source = net_source0*(1.0+neutral_amp*var)
+    !    else
+    !      net_source=0
+    !    endif
+    !  endif
+    !endif
+
     if( moving_Io ) then
       if( mype .eq. int(Io_loc*LNG_GRID/torus_circumference) )then
-        net_source = LNG_GRID*net_source0*(1.0+neutral_amp*var)
+!        print *, "Io location is", Io_loc
+!        print *, "Io processor is", int(Io_loc*LNG_GRID/torus_circumference)
+        net_source = 0.2*LNG_GRID*net_source0!(1.0+neutral_amp*var)
       else
-        if( i .eq. 1 ) then
-          net_source = net_source0*(1.0+neutral_amp*var)
-        else
-          net_source=0
-        endif
+        net_source = 0.8*net_source0*(1.0 + neutral_amp*var)
       endif
     endif
-
+    
     if( .not. moving_Io ) then
       net_source = (net_source0*(1.0 + neutral_amp*var))!/LNG_GRID !ubiquitous
     endif
