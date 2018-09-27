@@ -315,20 +315,20 @@ function entropy(n, T, h, ntroptot)
 
   do i=0, numBin-1
     lat=abs((-max_theta*dTOr+i*dtheta))
-    latwght=cos(lat)**7
-    entropy%op  =entropy%op + n%op**(1/gammaval) * latwght *exp(-((z(i)/h%op )**2))
-    entropy%o2p =entropy%o2p+n%o2p**(1/gammaval) * latwght *exp(-((z(i)/h%o2p )**2))
-    entropy%sp  =entropy%sp +n%sp**(1/gammaval) * latwght *exp(-((z(i)/h%sp )**2))
-    entropy%s2p =entropy%s2p+n%s2p**(1/gammaval) * latwght *exp(-((z(i)/h%s2p )**2))
-    entropy%s3p =entropy%s3p+n%s3p**(1/gammaval) * latwght *exp(-((z(i)/h%s3p )**2))
-    entropy%elec =entropy%elec+(n%fh*n%elec)**(1/gammaval) * latwght *exp(-((z(i)/h%elec )**2))
+    latwght=cos(lat)**7 !set up latitudinal averaging (flux tube integral)
+    entropy%op  =entropy%op + n%op**(1/gammaval) !* latwght *exp(-((z(i)/h%op )**2))
+    entropy%o2p =entropy%o2p+n%o2p**(1/gammaval) !* latwght *exp(-((z(i)/h%o2p )**2))
+    entropy%sp  =entropy%sp +n%sp**(1/gammaval) !* latwght *exp(-((z(i)/h%sp )**2))
+    entropy%s2p =entropy%s2p+n%s2p**(1/gammaval) !* latwght *exp(-((z(i)/h%s2p )**2))
+    entropy%s3p =entropy%s3p+n%s3p**(1/gammaval) !* latwght *exp(-((z(i)/h%s3p )**2))
+    entropy%elec =entropy%elec+(n%fh*n%elec)**(1/gammaval) !* latwght *exp(-((z(i)/h%elec )**2))
 
 !   ntroptot = (n%op*exp(-((z(i)/h%op )**2)) + n%o2p*exp(-((z(i)/h%o2p )**2)) + n%sp*exp(-((z(i)/h%sp )**2)) + n%s2p*exp(-((z(i)/h%s2p )**2)) + n%s3p*exp(-((z(i)/h%s3p )**2)) + n%fh*n%elec*exp(-((z(i)/h%elec )**2)))**(1/gammaval) * latwght
 !   if(mype .eq. 0) print *, n%op, latwght
   end do
 !  isNaN=NaNcatch(nar(i+1)%sp, 111+i, mype) 
 !  if(mype .eq. 0) print *, i, z(i), h%sp
-    latwght=(dtheta)*4.0*PI*((Rj*1.0e5)**3.0)*(rdist**4.0)
+    latwght=1 !(dtheta)*4.0*PI*((Rj*1.0e5)**3.0)*(rdist**4.0)
 !    latwght=rdist**4
     entropy%op  =entropy%op  *latwght * (T%op) **(1/gammaval)
     entropy%o2p =entropy%o2p *latwght * (T%o2p) **(1/gammaval)

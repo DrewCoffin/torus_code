@@ -13,7 +13,7 @@ lng = 0.0
 val = 0.0
 close,1
 fil = './plots/data/'+spec+'/'+filetype+'/'+filetype+spec+nt+'_3D.dat'
-;fil = './plots/24x36data/'+spec+'/'+filetype+'/'+filetype+spec+nt+'_3D.dat'
+;fil = './plots/archive/dNL2/'+spec+'/'+filetype+'/'+filetype+spec+nt+'_3D.dat'
 ;fil = './'+filetype+spec+nt+'_3D.dat'
 print,fil
 openr,1,fil
@@ -51,8 +51,8 @@ end
 pro read_data,nfil,img,pfl,pfl2,pflr
 ;-----------------------------------------------------------
 
-nlng = 12 
-nr = 12
+nlng = 15 
+nr = 15 
 
 ;sp-------
 filetype='PUV_'
@@ -81,7 +81,7 @@ pfl = [pfl,val(wh)]
 
 ;s3p-------
 filetype='PUV_'
-spec = 'op' 
+spec = 's3p' 
 
 read_output,filetype,spec,tm,nlng,nr,lng,val,rad
 
@@ -186,7 +186,7 @@ stream = video.addvideostream(xsz, ysz, framerate)
 
 cnt = 0
 ts = 1
-for i =  40,300,ts do begin
+for i =  50,450,ts do begin
    w = window(window_title='torus',dimensions=[xsz,ysz],margin=0,$
               buffer=1)
    
@@ -205,7 +205,7 @@ w = window(dimensions=[600,1200])
 ind=1
 
 ;plot time series
-for i = 2,8,2  do begin
+for i = 2,10,2   do begin
    t = findgen(cnt)*ts
    L = pflr(i)
    whL = where(pflr eq L) 
@@ -213,7 +213,7 @@ for i = 2,8,2  do begin
 ;   p.xtitle='time (days)'
 ;   p.ytitle='Normalized $P_{UV}$'
 ;   p.title='L = '+strtrim(string(L),2)
-   v = 1.05
+   v = 1.0 
    r = 6.0*7.14e4
    C = 2*!pi*r
    T = (C/v)/(60.*60.*24.)
@@ -225,28 +225,35 @@ for i = 2,8,2  do begin
    wh = where(2*!pi*freq gt 0.05)
    ps1=plot(2*!pi*freq(wh),f(wh),/ylog,layout=[1,9,ind],/current,$
            margin=[0.12,0.21,0.05,0.1],$
-           xrange=[min(2*!pi*freq(wh)),max(2*!pi*freq(wh))/1],yrange=[1e-5,0.1],$
+           xrange=[min(2*!pi*freq(wh)),max(3*!pi*freq(wh))/3],yrange=[1e-5,0.1],$
            font_size=12,/xsty,name='S+')
    ps1.title = 'L = '+strmid(strtrim(string(L),2),0,4)
    ps1.ytitle='Power'
 
    p1=plot([omega,omega],ps1.yrange,'--',/overplot)
+   p1=plot([2*omega,2*omega],ps1.yrange,'--',/overplot)
+   p1=plot([3*omega,3*omega],ps1.yrange,'--',/overplot)
+   p1=plot([4*omega,4*omega],ps1.yrange,'--',/overplot)
+   p1=plot([5*omega,5*omega],ps1.yrange,'--',/overplot)
+   p1=plot([6*omega,6*omega],ps1.yrange,'--',/overplot)
+   ;for i = 1,5 do begin
+   ;        p1=plot([i*omega,i*omega],ps1.yrange,'--',/overplot)
+   ;endfor
 
-
-   omega_Trans = 2*!pi/43.
-   p1=plot([omega_Trans,omega_Trans],p1.yrange,'--',/overplot)
+   omega_Io = 2*!pi/5.8
+   p1=plot([omega_Io,omega_Io],p1.yrange,'--',/overplot)
 
    f = FFT_powerspectrum(pfl2(whL),ts,FREQ=freq)
    wh = where(2*!pi*freq gt 0.05)
-   ps3=plot(2*!pi*freq(wh),f(wh),':',/overplot,name='O+')
+   ps3=plot(2*!pi*freq(wh),f(wh),':',/overplot,name='S+++')
 
    ind = ind+1
 endfor   
    l = legend(target=[ps1,ps3])
    ps1.xtitle = 'Frequency (rad/day)'
    t = text(0.2,0.001,'$\lambda_{IV}$',/data,orientation=90,font_size=16)
-   t = text(0.14,0.0001,'$43 days$',/data,orientation=90,font_size=16)
-   t = text(0.8,0.95,'S$^{+}$',/normal,font_size=18)
+   t = text(1.08,0.001,'$\lambda_{Io}$',/data,orientation=90,font_size=14)
+   t = text(5.8,0.95,'S$^{+}$',/normal,font_size=18)
    t.Save,'fft.pdf'
 video.cleanup
 xinteranimate,/keep_pixmaps

@@ -16,3 +16,4 @@ plots/archive/dlla=**
 SysIVFFTs/**
 *.pdf
 *~
+oldffts/**

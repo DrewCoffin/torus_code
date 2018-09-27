@@ -134,7 +134,7 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
 !  if( vrad ) v_ion=1.0-abs(rdist-6.8)
-  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 3.0*exp(-(rdist-7.2)**2/(1.0**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 1.0*exp(-(rdist-7.2)**2/(0.8**2))!1.0-abs(rdist-6.8)
 !  if( vrad ) v_ion= 2.5*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
 
   if( .not. vrad .and. .not. vmass) v_ion=1.05
@@ -335,9 +335,9 @@ subroutine model()
       if( mype .eq. int(Io_loc*LNG_GRID/torus_circumference) )then
 !        print *, "Io location is", Io_loc
 !        print *, "Io processor is", int(Io_loc*LNG_GRID/torus_circumference)
-        net_source = 0.2*LNG_GRID*net_source0!(1.0+neutral_amp*var)
+        net_source = 0.3*LNG_GRID*net_source0!*(1.0+neutral_amp*var)
       else
-        net_source = 0.8*net_source0*(1.0 + neutral_amp*var)
+        net_source = 0.7*net_source0*(1.0 + neutral_amp*var)
       endif
     endif
     
@@ -374,9 +374,9 @@ subroutine model()
 !    if( vmass .and. mass_loading(mype+1) .gt. 0.0) then   !for Pontius equation
     if( vrad .and. abs(ave_dNL2_dL) .gt. 0.0) then   !for Pontius equation
       !print *, "average flux content gradient: ", abs(ave_dNL2_dL)
-!       elecHot_multiplier=elecHot_multiplier*(1.0+0.75*((mass_loading(mype+1)/ave_loading)-1.0))    
-      elecHot_multiplier=elecHot_multiplier*(1.0+0.8*((dNL2_dL(mype+1)/ave_dNL2_dL)-1.0))   
-!        elecHot_multiplier=elecHot_multiplier*(1.0+2.8*((nl2_tot(mype+1)/ave_nl2_tot)-1.0))    
+!       elecHot_multiplier=elecHot_multiplier*(1.0+2.00*((mass_loading(mype+1)/ave_loading)-1.0)) !Pontius   
+      elecHot_multiplier=elecHot_multiplier*(1.0+0.8*((dNL2_dL(mype+1)/ave_dNL2_dL))) !-1.0))  !Hess
+!        elecHot_multiplier=elecHot_multiplier*(1.0+0.8*((nl2_tot(mype+1)/ave_nl2_tot)-1.0))   !other Hess suggestion
 !       if (mype .eq. 1) then
 !          write(*,*) 'Hot electrons.....',elecHot_multiplier,mass_loading(mype+1),ave_loading
 !       endif
@@ -388,7 +388,13 @@ subroutine model()
 
 !----------------------Pontius subcorotation-------------------------------------------------------------------------------
       if( vmass ) then
-        v_ion=1.0+(((mass_loading(mype+1)*volume*LNG_GRID)*57.0*(rdist)**5)/(0.1*sqrt(1.0-(1.0/(rdist)))*4.0*PI*1.5*((Rj*1.0e3)**2)*(4.2e-4)**2))
+        domega=(((mass_loading(mype+1)*volume*LNG_GRID)*57.0*(rdist)**4)/(0.1*sqrt(1.0-(1.0/(rdist)))*4.0*PI*0.001*((Rj*1.0e3)**3)*(4.2e-4)**2))
+!        57.0 is corotation speed, 4*pi is geometry factor, and 4.2e-4 is B_J
+!        Term after 4*pi is sigma_p
+        v_ion = rdist*Rj*domega
+        !if( mype .eq. 1 ) then
+        !    print *, "v_ion = ", v_ion    
+        !endif
 !        n%fh=n%fh*((mass_loading(mype+1)/ave_loading)**(15.0)) !Should replace sys4 population.
       endif
 !----------------------Pontius subcorotation-------------------------------------------------------------------------------
@@ -396,10 +402,10 @@ subroutine model()
 
  !   elecHot_multiplier=elecHot_multiplier*(1.0+0.5*((mass_loading(mype+1)/ave_loading)-1.0))
 
-    n%fh  = fehot_const * (1.0 + hote_amp * var)*elecHot_multiplier
-    if (n%fh .gt. 8.0e-3) then  !limit max f_eh                   
-       n%fh = 8.0e-3
-    endif
+    n%fh  = fehot_const * (1.0 + hote_amp * var)*elecHot_multiplier !Time variation of hot electrons
+!    if (n%fh .gt. 4.0e-2) then  !limit max f_eh                   
+!       n%fh = 4.0e-2
+!    endif
     
 !    do j = 1,12
 !       call MPI_BARRIER(MPI_COMM_WORLD, ierr)

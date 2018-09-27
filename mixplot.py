@@ -10,6 +10,7 @@ import sys
 import numpy as np
 import math as m
 import matplotlib.pyplot as plt
+#import matplotlib.gridspec as gridspec
 
 def getdim(): #gets dimensions of latest or current run
      with open("do", 'r') as runfile:
@@ -48,17 +49,42 @@ lng, rad = getdim()
 #intdays = range(int(sys.argv[1]), int(sys.argv[2])) #feeds in integer time step for the file naming scheme
 days = range(int(sys.argv[1]), int(sys.argv[2])) #feeds in integer time step for the file naming scheme
 output = []
-specs = ['sp', 's3p'] #'s2p', 's3p', 'op', 'o2p', 'elec']
+specs = ['sp', 's2p', 's3p', 'o2p'] #, 'op', 'elec']
 output = [getval(output, days, specs[i], 'plots/data', lng, int(sys.argv[3])) for i in range(len(specs))] #generates table of peak locations per time step
 #print output
 #print len(days), len(output[0])
 #Plot peak angle
 
 #plt.subplot(231)
+#plt.title('Peak Mixing ratio location')      
+#plt.xlabel('Days')
+#plt.ylabel('System III Angle')
+fig = plt.figure(figsize = (2,1))
+#gs1 = gridspec.GridSpec(1, 2)
+#gs1.update(hspace= 0)
+#for i in range(2):
+plt.subplot(211)
 plt.title('Peak Mixing ratio location')      
-plt.xlabel('Days')
+#plt.xlabel('Days')
+plt.xlim(int(sys.argv[1]), int(sys.argv[2]))
 plt.ylabel('System III Angle')
-plt.scatter(days, output[0], marker='^', c = 'red', label = specs[0])
-plt.scatter(days, output[1], marker='o', c = 'blue', label = specs[1])
-plt.legend()
+plt.ylim(-10,360)
+plt.scatter(days, output[0], marker='^', s=90, c = 'blue', label = specs[0])
+plt.scatter(days, output[1], marker='o', s=90, c = 'green', label = specs[1])
+plt.scatter(days, output[2], marker='o', s=90, c = 'orange', label = specs[2])
+plt.scatter(days, output[3], marker='^', s=90, c = 'red', label = specs[3])
+#plt.legend(loc=4)
+
+plt.subplot(212)
+plt.xlabel('Days')
+plt.xlim(int(sys.argv[1]), int(sys.argv[2]))
+plt.ylabel('System III Angle')
+plt.ylim(0,350)
+plt.scatter(days, output[0], marker='^', s=90, c = 'blue', label = specs[0])
+plt.scatter(days, output[1], marker='o', s=90, c = 'green', label = specs[1])
+plt.scatter(days, output[2], marker='o', s=90, c = 'orange', label = specs[2])
+plt.scatter(days, output[3], marker='^', s=90, c = 'red', label = specs[3])
+plt.legend(loc=4)
+
+fig.subplots_adjust(hspace=0)
 plt.show()
