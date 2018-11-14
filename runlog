@@ -7,17 +7,17 @@
  $$ Hot Elec Fraction....  2.4999999E-03
  $$ Transport............  0.0000000E+00
  $$ Hot Elec Temp........   42.00000    
- $$ Subcorotation........   1.155399    
+ $$ Subcorotation........   1.324563    
  $$ Sys 3 Hot Elec Frac..  0.3000000    
  $$ Sys 4 Hot Elec Amp...  0.4000000    
  $$ Sys 4 Speed..........   1.050000    
  
  $$ GAUSSIAN SOURCE CHANGE VARIABLES
- $$ Neutral Variation....  0.0000000E+00
- $$ Neutral Temp.........   249.0000    
+ $$ Neutral Variation....   1.000000    
+ $$ Neutral Temp.........   149.0000    
  $$ Variation Duration...   30.00000    
- $$ Hot Elec Variation...  0.0000000E+00
- $$ Hot Elec Temp........   279.0000    
+ $$ Hot Elec Variation...  9.9999998E-03
+ $$ Hot Elec Temp........   179.0000    
  $$ Variation Duration...   60.00000    
  
  $$ Run Length(days)....   450.0000    
@@ -26,15 +26,15 @@
  $$--------------------------------
  $$ IN-CODE ENERGY BUDGET
  $$--------------------------------
- $$ ionized S............  0.7290887    
- $$ ionized O............  0.2938393    
- $$ charge exchange S....  0.1218309    
- $$ charge exchange O....  0.2515485    
- $$ equil with ehot......   1.359478    
- $$ total in.............   2.755786    
- $$ puv..................   35.92352    
- $$ fast/ena.............  0.5317730    
- $$ transport............   1.485766    
- $$ total out............   4.412440    
- $$ in/out...............  0.6245493    
+ $$ ionized S............  0.7631695    
+ $$ ionized O............  0.3355343    
+ $$ charge exchange S....  0.1093955    
+ $$ charge exchange O....  0.2195328    
+ $$ equil with ehot......   1.526783    
+ $$ total in.............   2.954415    
+ $$ puv..................   36.49317    
+ $$ fast/ena.............  0.4658298    
+ $$ transport............   1.482898    
+ $$ total out............   4.381606    
+ $$ in/out...............  0.6742768    
  

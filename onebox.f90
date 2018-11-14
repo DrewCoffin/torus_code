@@ -134,7 +134,7 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
 !  if( vrad ) v_ion=1.0-abs(rdist-6.8)
-  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 1.0*exp(-(rdist-7.2)**2/(0.8**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion=0.85*exp(-(rdist-6.0)**2/1.0**2) + 0.9*exp(-(rdist-6.8)**2/(1.0**2))!1.0-abs(rdist-6.8)
 !  if( vrad ) v_ion= 2.5*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
 
   if( .not. vrad .and. .not. vmass) v_ion=1.05
@@ -375,7 +375,7 @@ subroutine model()
     if( vrad .and. abs(ave_dNL2_dL) .gt. 0.0) then   !for Pontius equation
       !print *, "average flux content gradient: ", abs(ave_dNL2_dL)
 !       elecHot_multiplier=elecHot_multiplier*(1.0+2.00*((mass_loading(mype+1)/ave_loading)-1.0)) !Pontius   
-      elecHot_multiplier=elecHot_multiplier*(1.0+0.8*((dNL2_dL(mype+1)/ave_dNL2_dL))) !-1.0))  !Hess
+      elecHot_multiplier=elecHot_multiplier*(1.0+1.2*((dNL2_dL(mype+1)/ave_dNL2_dL))) !-1.0))  !Hess
 !        elecHot_multiplier=elecHot_multiplier*(1.0+0.8*((nl2_tot(mype+1)/ave_nl2_tot)-1.0))   !other Hess suggestion
 !       if (mype .eq. 1) then
 !          write(*,*) 'Hot electrons.....',elecHot_multiplier,mass_loading(mype+1),ave_loading

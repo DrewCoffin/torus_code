@@ -1,9 +1,11 @@
 set terminal png
 set output 'entropy.png'
-set ylabel 'Entropy'         
-set xlabel 'Radial distance'
-set autoscale
-set title "Entropy radial profiles"        
+set ylabel 'Entropy [(nT)^gamma]'         
+set xlabel 'Radial distance (Rj)'
+set logscale y
+set yrange [300:50000]
+#set autoscale
+set title "Radial flux tube entropy profiles"        
 set key outside
 plot 'sp.dat' using 3:2 title 'S+', \
      's2p.dat' using 3:2 title 'S2+', \
