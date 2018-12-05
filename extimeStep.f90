@@ -7,14 +7,14 @@ MODULE TIMESTEP
 
   CONTAINS
 
-  subroutine updateNu(v, lat, T, elecHot)
+  subroutine updateNu(v, lat, T, elecHot, ex)
 !This subroutine calculates the new nu values for each time step. 
 !this subroutine uses the nu_* functions from functions.f90
 !StepNu is a near copy. These two should be consolidated if possible. 
     type(nu)          ::v
     type(lat_dist)    ::lat
     type(temp)        ::T
-    double precision  ::elecHot
+    double precision  ::elecHot, ex
     integer           ::i
 
     v%sp_s2p= nu_ii(lat%sp, T%sp, 1.0, 32.0, lat%s2p, T%s2p, 2.0, 32.0)
@@ -44,6 +44,13 @@ MODULE TIMESTEP
     v%op_elec = nu_ei(lat%elec, T%elec, lat%op , T%op , 1.0, 16.0)
     v%o2p_elec= nu_ei(lat%elec, T%elec, lat%o2p, T%o2p, 2.0, 16.0)
 
+    v%sp_ex = nu_ei(lat%ex, T%ex, lat%sp , T%sp , 1.0, 32.0)
+    v%s2p_ex = nu_ei(lat%ex, T%ex, lat%s2p, T%s2p, 2.0, 32.0)
+    v%s3p_ex = nu_ei(lat%ex, T%ex, lat%s3p, T%s3p, 3.0, 32.0)
+!    v%s4p_elec= nu_ei(lat%elec, T%elec, lat%s4p, T%s4p, 4.0, 32.0)   
+    v%op_ex = nu_ei(lat%ex, T%ex, lat%op , T%op , 1.0, 16.0)
+    v%o2p_ex= nu_ei(lat%ex, T%ex, lat%o2p, T%o2p, 2.0, 16.0)
+
 !    v%sp_elecHot = nu_ei(lat%elecHot, T%elecHot, lat%sp , T%sp , 1.0, 32.0)
 !    v%s2p_elecHot= nu_ei(lat%elecHot, T%elecHot, lat%s2p, T%s2p, 2.0, 32.0)
 !    v%s3p_elecHot= nu_ei(lat%elecHot, T%elecHot, lat%s3p, T%s3p, 3.0, 32.0)
@@ -62,6 +69,15 @@ MODULE TIMESTEP
 
     v%elec_elecHot= nu_ee(lat%elec, T%elec, elecHot, T%elecHot) 
     
+!    if( mype .eq. 0 ) then
+!        print *, 'timeStep lat%elec = ', lat%elec
+!        print *, 'timeStep T%elec = ', T%elec
+!        print *, 'timeStep elecHot = ', elecHot
+!        print *, 'timeStep T%ex = ', T%ex
+!        print *, 'timeStep ex = ', ex
+!    endif
+     
+    v%elec_ex = nu_ee(lat%elec, T%elec, ex, T%ex)
 !    print *, rdist, v%elec_elecHot, fehot_const
 
   end subroutine updateNu
@@ -110,6 +126,8 @@ MODULE TIMESTEP
     v%o2p_elecHot= nu_ei(lat%elecHot, T%elecHot, lat%o2p, T%o2p, 2.0, 16.0)
 
     v%elec_elecHot= nu_ee(lat%elec, T%elec, n%elecHot, T%elecHot)
+ 
+    v%elec_ex = nu_ee(lat%elec, T%elec, n%ex, T%ex)
 
   end subroutine stepNu
 
@@ -194,7 +212,18 @@ MODULE TIMESTEP
     updateNT%elec=nrg%elec + dt * EFelec
     call gtzero(updateNT%elec)
 !    print *, rdist, EFelec
-
+    EFex = EF_ex(n, T, h, ind, dep, lat, v, ft)
+    updateNT%ex=nrg%ex + dt * EFex
+    if( mype .eq. 0) then
+        print *, 'updateNT code'
+        print *, 'nrg%ex = ', nrg%ex
+        print *, 'EFop = ', EFop
+        print *, 'EFelec = ', EFelec
+        print *, 'EFex =', EFex
+        print *, 'updateNT%ex = ', updateNT%ex
+     endif
+    call gtzero(updateNT%ex)
+  
   end function updateNT
 
   subroutine improvedEuler(np, n, n1, T1, h1, ind1, dep1, nu1, ft1, lat1, nTp, nrg)
@@ -276,13 +305,38 @@ MODULE TIMESTEP
     real            ::z
     integer         ::i
 
+    if( mype .eq. 0) then
+      print *, 'initial T%elec = ', T%elec
+      print *, 'initial T1%elec = ', T1%elec
+      !print *, 'initial nrg%ex = ', nrg%ex      
+!      print *, 'initial nrg1%ex = ', nrg1%ex
+    endif
+
     call dependent_rates(dep, ind, n, T, h)
 
     call cm3_reactions(ind, dep, h, n, ft, z)
- 
+
+    if( mype .eq. 0) then
+      print *, 'post cm3 reac T%elec = ', T%elec
+      print *, 'post cm3 reac T1%elec = ', T1%elec
+    endif
+
     call lat_distribution(n, h, lat)
     
-    call updateNu(v, lat, T, n%elecHot)
+   !if( mype .eq. 0) then
+    ! print *, 'post latdist n%elec = ', n%elec
+    ! print *, 'post latdist n1%elec = ', n1%elec
+      !print *, 'post latdist nrg%ex = ', nrg%ex      
+      !print *, 'post latdist nrg1%ex = ', nrg1%ex
+   !endif
+    
+    call updateNu(v, lat, T, n%elecHot, n%ex)
+    
+    if( mype .eq. 0) then
+      print *, 'post updateNu nrg%elec = ', nrg%elec
+      print *, 'post updateNu T1%elec = ', nrg1%elec
+    endif
+    
     mass_loading(mype+1)=0.0
     call fluxCorrect(n, n1, h, ind, dep, ft)
 
@@ -290,9 +344,43 @@ MODULE TIMESTEP
       lat%elecHot(i)=n%elecHot
     enddo
 
+    if( mype .eq. 0) then
+    ! print *, 'pre updateNT T%elec = ', T%elec
+    ! print *, 'pre updateNT T1%elec = ', T1%elec
+       print *, 'pre updateNT nrg%elec = ', nrg%elec
+       print *, 'pre updateNT nrg1%elec = ', nrg1%elec
+!      print *, 'pre updateNT T%elec = ', T%elec
+    !  print *, 'pre updateNT n1%ex = ', n1%ex
+    !  print *, 'pre updateNT nrg1%ex = ', nrg1%ex
+    endif
+    
     nrg1 = updateNT(n, T, h, ind, dep, v, ft, lat, nrg)
 
+     if( mype .eq. 0) then
+!      print *, 'post updateNT n%elec = ', n%elec
+!      print *, 'post updateNT n1%elec = ', n1%elec
+       print *, 'post updateNT nrg%elec = ', nrg%elec
+       print *, 'post updateNT nrg1%elec = ', nrg1%elec
+    !  print *, 'post updateNT T%elec = ', T%elec
+    !  print *, 'post updateNT T1%elec = ', T1%elec
+      print *, 'post updateNT nrg%ex = ', nrg%ex
+      print *, 'post updateNT nrg1%ex = ', nrg1%ex
+    !  print *, 'pre update_temp T%ex = ', T%ex
+      endif
+    
     call update_temp(n1, nrg1, T1)
+
+     if( mype .eq. 0) then
+  !    print *, 'post updatetempe n%elec = ', n%elec
+  !    print *, 'post updatetemp n1%elec = ', n1%elec
+       print *, 'post updatetemp nrg%elec = ', nrg%elec
+       print *, 'post updatetemp nrg1%elec = ', nrg1%elec
+     ! print *, 'post updatetemp T%elec = ', T%elec
+     ! print *, 'post updatetemp T1%elec = ', T1%elec
+       print *, 'post updatetemp nrg%ex = ', nrg%ex
+       print *, 'post updatetemp nrg1%ex = ', nrg1%ex
+     ! print *, 'post updatetemp T%ex = ', T%ex
+     endif
 
     call get_scale_heights(h1, T1, n1)
 
@@ -301,9 +389,28 @@ MODULE TIMESTEP
     call lat_distribution(n1, h1, lat1)
 
     call stepNu(v1, n1, lat1, T1)
+
+    if( mype .eq. 0) then
+   !   print *, 'post stepNu n%elec = ', n%elec
+   !   print *, 'post stepNu n1%elec = ', n1%elec
+!      print *, 'post stepNu T%elec = ', T%elec
+      print *, 'post stepNu nrg%ex = ', nrg%ex      
+      print *, 'post stepNu nrg1%ex = ', nrg1%ex
+    endif
+
+
     mass_loading(mype+1)=0.0
     call improvedEuler(np, n, n1, T1, h1, ind, dep1, v1, ft, lat1, nTp, nrg)
+
     call update_temp(np, nTp, Tp)
+
+    if( mype .eq. 0) then
+    !  print *, 'post updatetemp  n%elec = ', n%elec
+    !  print *, 'post updatetemp n1%elec = ', n1%elec
+       print *, 'post Euler updatetemp nrg%ex = ', nrg%ex
+       print *, 'post Euler updatetemp nrg1%ex = ', nrg1%ex
+    endif
+
     !if(mype .le. 1) print *, rdist, nTp%elec, Tp%elec
 !    print *, rdist, Tp%elecHot, n%fh
 !    if(mype .eq. 0) print *, "+++++++++++++++++++++++++++"
@@ -313,9 +420,33 @@ MODULE TIMESTEP
 
 !    if(mype .eq. 0) print *, T%sp, T1%sp, Tp%sp
 
-    n = np
-    nrg = nTp
-    T = Tp
+     if( mype .eq. 0) then
+!      print *, 'pre rename  n%elec = ', n%elec
+!      print *, 'pre rename n1%elec = ', n1%elec
+       print *, 'pre rename nrg%elec = ', nrg%elec
+       print *, 'pre rename nrg1%elec = ', nrg1%elec
+       print *, 'pre rename nrg%ex = ', nrg%ex
+       print *, 'pre rename nrg1%ex = ', nrg1%ex
+!      print *, 'pre rename  n%ex = ', n%ex
+!      print *, 'pre rename n1%ex = ', n1%ex
+!      print *, 'pre rename T%ex = ', T%ex
+     endif
+
+    n = n1
+    nrg = nrg1
+    T = T1
+
+     if( mype .eq. 0) then
+!      print *, 'post rename  n%elec = ', n%elec
+!      print *, 'post rename n1%elec = ', n1%elec
+       print *, 'post rename nrg%elec = ', nrg%elec
+       print *, 'post rename nrg1%elec = ', nrg1%elec
+       print *, 'post rename nrg%ex = ', nrg%ex
+       print *, 'post rename nrg1%ex = ', nrg%ex
+!      print *, 'post rename  n%ex = ', n%ex
+!      print *, 'post rename n1%ex = ', n1%ex
+!      print *, 'post rename T%ex = ', T%ex
+     endif
 
 !    if(mype .le. 2) print *, rdist, T%elec
 !    call az_transport(n, nrg)

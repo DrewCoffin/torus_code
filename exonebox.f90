@@ -174,9 +174,11 @@ subroutine model()
   n%s=0.0!50.0 * test_multiplier* (rdist/6.0)**source_exp
   n%o=0.0!100.0 * test_multiplier* (rdist/6.0)**source_exp
 
+  n%ex = 100.0 * test_multiplier * (rdist/10.2)**(10.0)
 
   Te0 = 5.0
   Ti0 = 70.0 
+  T%ex = 500.0
   Teh0= tehot*(rdist/6.0)**tehot_alpha
   !if(Teh0 .gt. 400.0) Teh0=400.0
   fehot_const= fehot_const*(rdist/6.0)**fehot_exp
@@ -279,7 +281,8 @@ subroutine model()
   nrg%s3p = n%s3p * T%s3p
   nrg%op = n%op * T%op
   nrg%o2p = n%o2p * T%o2p
-
+  nrg%ex = n%ex * T%ex
+ 
   ni=n
   np=n
 
@@ -309,7 +312,7 @@ subroutine model()
   mass_loading(mype+1)=1e-33 !set to arbitarily small value
   ave_loading=1e-33
 
-!-----------------------Interation loop-------------------------------------------------------------------------------------------------
+!-----------------------Iteration loop-------------------------------------------------------------------------------------------------
   do i=1, nit
     call MPI_BARRIER(MPI_COMM_WORLD, ierr)
 !    if( mype .eq. 0 ) then
@@ -429,23 +432,50 @@ subroutine model()
 
     n%elecHot = n%elec * n%fh!/n%fc
     nrg%elecHot = n%elecHot * T%elecHot
+    h%ex = h%elec
 
     do j=1, LAT_SIZE
       lat%z(j)= (j-1) * h%elec / 10.0  !Initializing lat%z
       lat%elec(j) = n%elec*exp(-(lat%z(j)/h%elec)**2)
       lati%elecHot(j) = n%elecHot!*exp(-(lat%z(j)/h%elec)**2)
+      lat%ex(j) = n%ex*exp(-(lat%z(j)/h%elec)**2)
     end do
+
+    !if( mype .eq. 0 ) then
+    !   print *, 'Post lat n%ex =', n%ex
+    !endif
 
     if ( DEBUG_GEN ) then !this variable set in debug.f90
       call DebugOutput(i, n, h, T, v, nrg)
     endif
     
+    !if( mype .eq. 0) then
+    !  print *, 'n%elec pre cm3= ', n%elec
+    !  print *, 'T%elec pre cm3= ', T%elec
+    !  print *, 'n%ex pre cm3= ', n%ex
+    !  print *, 'T%ex pre cm3= ', T%ex
+    !endif
+
     if( rdist < reac_off_dist ) then
       call cm3_latavg_model(n, T, nrg, h, v, ni, Ti, nTi, hi &
                          ,vi, np, Tp, nTp, ind, dep, depi, lat, lati, ft, zoff) 
+    if( mype .eq. 0) then
+    !  print *, 'n%elec post cm3 = ', n%elec
+    !  print *, 'T%elec post cm3 = ', T%elec
+      print *, 'nrg%ex post cm3 = ', nrg%ex
+      print *, 'nrg1%ex post cm3 = ', nTi%ex
+    !  print *, 'T%ex post cm3 = ', T%ex
+    endif
 
       call update_temp(n, nrg, T)
     
+    !if( mype .eq. 0) then
+    !  print *, 'n%elec post temp update = ', n%elec
+    !  print *, 'T%elec post temp update = ', T%elec
+    !  print *, 'n%ex post temp update = ', n%ex
+    !  print *, 'T%ex post temp update = ', T%ex
+    !endif
+
     else
 
        mass_loading(mype+1)=0.0
@@ -525,9 +555,9 @@ subroutine model()
           do j=0, LNG_GRID
             if( mype .eq. mod(j,LNG_GRID)+(k*LNG_GRID)) then
               if(OUTPUT_DENS) then
-                 call IonElecOutput(n%sp, n%s2p, n%s3p, n%op, n%o2p, n%elec,&
+                 call IonElecOutput(n%sp, n%s2p, n%s3p, n%op, n%o2p, n%elec, n%ex,&
                   longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'DENS')
-                 call IonElecOutput3D(n%sp, n%s2p, n%s3p, n%op, n%o2p, n%elec,&
+                 call IonElecOutput3D(n%sp, n%s2p, n%s3p, n%op, n%o2p, n%elec, n%ex,&
                   longitude, rdist, day_char, 'DENS')
 !                 if( rdist < reac_off_dist ) call OtherOutput(200.0*mass_loading(mype+1)/ave_loading, longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'LOAD')
 !                 if( rdist < reac_off_dist ) call OtherOutput3D(200.0*mass_loading(mype+1)/ave_loading, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'LOAD')
@@ -547,9 +577,9 @@ subroutine model()
                  if( j .eq. LNG_GRID ) call Elecspacer3D(day_char, 'FEH_')
               endif 
               if(OUTPUT_NL2) then
-                call IonElecOutput(nl2%sp, nl2%s2p, nl2%s3p, nl2%op, nl2%o2p,nl2%sp+nl2%s2p+nl2%s3p+nl2%op+nl2%o2p,&
+                call IonElecOutput(nl2%sp, nl2%s2p, nl2%s3p, nl2%op, nl2%o2p,nl2%sp+nl2%s2p+nl2%s3p+nl2%op+nl2%o2p, nl2%ex,&
                   longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'NL2_')
-                call IonElecOutput3D(nl2%sp, nl2%s2p, nl2%s3p, nl2%op, nl2%o2p,nl2%sp+nl2%s2p+nl2%s3p+nl2%op+nl2%o2p,&
+                call IonElecOutput3D(nl2%sp, nl2%s2p, nl2%s3p, nl2%op, nl2%o2p,nl2%sp+nl2%s2p+nl2%s3p+nl2%op+nl2%o2p, nl2%ex,&
                   longitude, rdist, day_char, 'NL2_')
                 if( j .eq. LNG_GRID ) call spacer3D(day_char, 'NL2_')
                 !call IonElecOutput(nl2e%sp, nl2e%s2p, nl2e%s3p, nl2e%op, nl2e%o2p,nl2e%sp+nl2e%s2p+nl2e%s3p+nl2e%op+nl2e%o2p,&
@@ -567,9 +597,9 @@ subroutine model()
                 if( j .eq. LNG_GRID ) call spacer3D(day_char, 'MIXR')
               endif
               if(OUTPUT_TEMP) then
-                call IonElecOutput(T%sp, T%s2p, T%s3p, T%op, T%o2p, T%elec, & !longitude, day_char, 'TEMP')
+                call IonElecOutput(T%sp, T%s2p, T%s3p, T%op, T%o2p, T%elec, T%ex,& !longitude, day_char, 'TEMP')
                   longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'TEMP')
-                call IonElecOutput3D(T%sp, T%s2p, T%s3p, T%op, T%o2p, T%elec, & !longitude, day_char, 'TEMP')
+                call IonElecOutput3D(T%sp, T%s2p, T%s3p, T%op, T%o2p, T%elec, T%ex,& !longitude, day_char, 'TEMP')
                   longitude, rdist, day_char, 'TEMP')
                 if( j .eq. LNG_GRID ) call spacer3D(day_char, 'TEMP')
               end if
@@ -582,20 +612,20 @@ subroutine model()
                  close(120)
               end if
               if(OUTPUT_PUV) then 
-                 call IonElecOutput(nrg%sp, nrg%s2p, nrg%s3p, nrg%op, nrg%o2p, nrg%elec, & !longitude, day_char, 'PUV_')
+                 call IonElecOutput(nrg%sp, nrg%s2p, nrg%s3p, nrg%op, nrg%o2p, nrg%elec, nrg%ex,& !longitude, day_char, 'PUV_')
                    longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'PUV_')
-                 call IonElecOutput3D(nrg%sp, nrg%s2p, nrg%s3p, nrg%op, nrg%o2p, nrg%elec, & !longitude, day_char, 'PUV_')
+                 call IonElecOutput3D(nrg%sp, nrg%s2p, nrg%s3p, nrg%op, nrg%o2p, nrg%elec, nrg%ex,& !longitude, day_char, 'PUV_')
                    longitude, rdist, day_char, 'PUV_')
                  !call OtherOutput3D(nrgy%Puv_sp, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'PUV_')
                 if( j .eq. LNG_GRID ) call spacer3D(day_char, 'PUV_')
               end if
-              if(OUTPUT_ENTR) then 
-                 call IonElecOutput(ntrop%sp, ntrop%s2p, ntrop%s3p, ntrop%op, ntrop%o2p, ntrop%elec, & longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'ENTR')
-                 call IonElecOutput3D(ntrop%sp, ntrop%s2p, ntrop%s3p, ntrop%op, ntrop%o2p, ntrop%elec, & longitude, rdist, day_char, 'ENTR')
+              !if(OUTPUT_ENTR) then 
+               !  call IonElecOutput(ntrop%sp, ntrop%s2p, ntrop%s3p, ntrop%op, ntrop%o2p, ntrop%elec, ntrop%ex,& longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'ENTR')
+                ! call IonElecOutput3D(ntrop%sp, ntrop%s2p, ntrop%s3p, ntrop%op, ntrop%o2p, ntrop%elec, ntrop%ex,& longitude, rdist, day_char, 'ENTR')
 !                 call IonElecOutput(nl2e%sp, nl2e%s2p, nl2e%s3p, nl2e%op, nl2e%o2p, nl2e%elec, & longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'ENTR')
 !                 call IonElecOutput3D(nl2e%sp, nl2e%s2p, nl2e%s3p, nl2e%op, nl2e%o2p, nl2e%elec, & longitude, rdist, day_char, 'ENTR')
-                if( j .eq. LNG_GRID ) call spacer3D(day_char, 'ENTR')
-              end if
+                !if( j .eq. LNG_GRID ) call spacer3D(day_char, 'ENTR')
+              !end if
 !              open(unit=200, file='feh'//day_char//'.dat', status='unknown', position='append')
 !              open(unit=210, file='vr'//day_char//'.dat', status='unknown', position='append')
 !              open(unit=220, file='source'//day_char//'.dat', status='unknown', position='append')
@@ -952,6 +982,8 @@ subroutine rad_transport(n, nrg, dep, h)
     nin%op=n%op
     nin%o2p=n%o2p
     nin%elec=n%elec
+    nin%ex=n%ex
+    !print *, 'nin%ex =', nin%ex
 !    call output(nin) 
 !    call output(n) 
     nTin%sp=70.0*n%sp
@@ -960,6 +992,7 @@ subroutine rad_transport(n, nrg, dep, h)
     nTin%op=70.0*n%op
     nTin%o2p=70.0*n%o2p
     nTin%elec=5.0*n%elec
+    nTin%ex=500.0*n%ex
     numerical_c_rin=numerical_c_r*((6.0-dr)/6.0)**expv_r0
   endif
 !    if (mype .eq. 0) then
@@ -973,19 +1006,28 @@ subroutine rad_transport(n, nrg, dep, h)
 !
 !    endif
    if( .false. ) then
+    !print *, 'Pre-upwind n%elec = ', n%elec
     n%sp  =UpwindRadTransport(nin%sp ,  n%sp , numerical_c_r, numerical_c_rin)
     n%s2p =UpwindRadTransport(nin%s2p,  n%s2p, numerical_c_r, numerical_c_rin)
     n%s3p =UpwindRadTransport(nin%s3p,  n%s3p, numerical_c_r, numerical_c_rin)
     n%op  =UpwindRadTransport(nin%op ,  n%op , numerical_c_r, numerical_c_rin)
     n%o2p =UpwindRadTransport(nin%o2p,  n%o2p, numerical_c_r, numerical_c_rin)
     n%elec=UpwindRadTransport(nin%elec, n%elec,numerical_c_r, numerical_c_rin)
- 
+    n%ex =UpwindRadTransport(nin%ex, n%ex,numerical_c_r, numerical_c_rin)
+    !print *, 'Post-upwind n%elec = ', n%elec
+    !print *, 'nin%ex = ', nin%e
+
+    !if( mype .eq. 0 ) then
+    !   print *, 'Post transport n%ex =', n%ex
+    !endif
+
     nrg%sp  =UpwindRadTransport(nTin%sp ,  nrg%sp , numerical_c_r, numerical_c_rin)
     nrg%s2p =UpwindRadTransport(nTin%s2p,  nrg%s2p, numerical_c_r, numerical_c_rin)
     nrg%s3p =UpwindRadTransport(nTin%s3p,  nrg%s3p, numerical_c_r, numerical_c_rin)
     nrg%op  =UpwindRadTransport(nTin%op ,  nrg%op , numerical_c_r, numerical_c_rin)
     nrg%o2p =UpwindRadTransport(nTin%o2p,  nrg%o2p, numerical_c_r, numerical_c_rin)
     nrg%elec=UpwindRadTransport(nTin%elec, nrg%elec,numerical_c_r, numerical_c_rin)
+    nrg%ex=UpwindRadTransport(nTin%ex, nrg%ex,numerical_c_r, numerical_c_rin)
  !   nrg%elecHot =UpwindTransport(nTin%elecHot, nrg%elecHot,numerical_c_r)
   else
 !double precision function LWRadTransport(inside, center, outside, cin, c, cout)
@@ -1002,6 +1044,7 @@ subroutine rad_transport(n, nrg, dep, h)
       nout%op=n%op
       nout%o2p=n%o2p
       nout%elec=n%elec
+      nout%ex=n%ex
       numerical_c_rout=numerical_c_r*((9.0+dr)/6.0)**expv_r0
     endif 
     n%sp  =LWRadTransport(nin%sp  ,  n%sp  , nout%sp  , numerical_c_rin, numerical_c_r, numerical_c_rout)
@@ -1010,6 +1053,7 @@ subroutine rad_transport(n, nrg, dep, h)
     n%op  =LWRadTransport(nin%op  ,  n%op  , nout%op  , numerical_c_rin, numerical_c_r, numerical_c_rout)
     n%o2p =LWRadTransport(nin%o2p ,  n%o2p , nout%o2p , numerical_c_rin, numerical_c_r, numerical_c_rout)
     n%elec=LWRadTransport(nin%elec,  n%elec, nout%elec, numerical_c_rin, numerical_c_r, numerical_c_rout)
+    n%ex=LWRadTransport(nin%ex,  n%ex, nout%ex, numerical_c_rin, numerical_c_r, numerical_c_rout)
   
 !    nrg%sp  =LWRadTransport(nTin%sp  ,  nrg%sp  , nTout%sp  , numerical_c_rin, numerical_c_r, numerical_c_rout)
 !    nrg%s2p =LWRadTransport(nTin%s2p ,  nrg%s2p , nTout%s2p , numerical_c_rin, numerical_c_r, numerical_c_rout)
@@ -1247,6 +1291,9 @@ subroutine GetAzNeighbors(n, nrg, cleft, cright)
       call MPI_SENDRECV(n%elec, 1, MPI_DOUBLE_PRECISION, right, 22, nleft%elec, 1, MPI_DOUBLE_PRECISION, left, 22,&
            MPI_COMM_WORLD, stat, ierr)
 
+      call MPI_SENDRECV(n%ex, 1, MPI_DOUBLE_PRECISION, right, 22, nleft%ex, 1, MPI_DOUBLE_PRECISION, left, 22,&
+           MPI_COMM_WORLD, stat, ierr)
+
       call MPI_SENDRECV(numerical_c_ion, 1, MPI_REAL, left, 22, cright, 1, MPI_REAL, right, 22,&
            MPI_COMM_WORLD, stat, ierr)
 
@@ -1275,6 +1322,8 @@ subroutine GetAzNeighbors(n, nrg, cleft, cright)
       call MPI_SENDRECV(n%elec, 1, MPI_DOUBLE_PRECISION, left, 22, nright%elec, 1, MPI_DOUBLE_PRECISION, right, 22,&
            MPI_COMM_WORLD, stat, ierr)
 
+      call MPI_SENDRECV(n%ex, 1, MPI_DOUBLE_PRECISION, left, 22, nright%ex, 1, MPI_DOUBLE_PRECISION, right, 22,&
+           MPI_COMM_WORLD, stat, ierr)
 
 !      call MPI_SEND(n%elecHot, 1, MPI_DOUBLE_PRECISION, right, 22, MPI_COMM_WORLD, ierr)
 !      call MPI_RECV(nleft%elecHot, 1, MPI_DOUBLE_PRECISION, left, 22, MPI_COMM_WORLD, stat, ierr)
@@ -1298,6 +1347,9 @@ subroutine GetAzNeighbors(n, nrg, cleft, cright)
       call MPI_SENDRECV(nrg%elec, 1, MPI_DOUBLE_PRECISION, right, 22, nTleft%elec, 1, MPI_DOUBLE_PRECISION, left, 22,&
            MPI_COMM_WORLD, stat, ierr)
 
+      call MPI_SENDRECV(nrg%ex, 1, MPI_DOUBLE_PRECISION, right, 22, nTleft%ex, 1, MPI_DOUBLE_PRECISION, left, 22,&
+           MPI_COMM_WORLD, stat, ierr)
+
       call MPI_SENDRECV(nrg%sp, 1, MPI_DOUBLE_PRECISION, left, 22, nTright%sp, 1, MPI_DOUBLE_PRECISION, right, 22,& 
            MPI_COMM_WORLD, stat, ierr)
 
@@ -1316,6 +1368,9 @@ subroutine GetAzNeighbors(n, nrg, cleft, cright)
       call MPI_SENDRECV(nrg%elec, 1, MPI_DOUBLE_PRECISION, left, 22, nTright%elec, 1, MPI_DOUBLE_PRECISION, right, 22,&
            MPI_COMM_WORLD, stat, ierr)
 
+
+      call MPI_SENDRECV(nrg%ex, 1, MPI_DOUBLE_PRECISION, left, 22, nTright%ex, 1, MPI_DOUBLE_PRECISION, right, 22,&
+           MPI_COMM_WORLD, stat, ierr)
 
 !      call MPI_SEND(nrg%elecHot, 1, MPI_DOUBLE_PRECISION, right, 22, MPI_COMM_WORLD, ierr)
 !      call MPI_RECV(nTleft%elecHot, 1, MPI_DOUBLE_PRECISION, left, 22, MPI_COMM_WORLD, stat, ierr)
@@ -1365,6 +1420,9 @@ subroutine GetRadLeftNeighbors(n, nrg, h)
   if(outside<npes) call MPI_SEND(n%elec*rdist/rado, 1, MPI_DOUBLE_PRECISION, outside, 22, MPI_COMM_WORLD, ierr)
   if(inside.ge.0) call MPI_RECV(nin%elec, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, stat, ierr)
 
+  if(outside<npes) call MPI_SEND(n%ex*rdist/rado, 1, MPI_DOUBLE_PRECISION, outside, 22, MPI_COMM_WORLD, ierr)
+  if(inside.ge.0) call MPI_RECV(nin%ex, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, stat, ierr)
+
 !!!!!!!!!!!!!!!!!!!!HEIGHT!!!!!!!!!!!!!!!!!!!!!!
   if(inside.ge.0) call MPI_SEND(h%sp, 1, MPI_REAL, inside, 22, MPI_COMM_WORLD, ierr)
   if(outside<npes) call MPI_RECV(hout%sp, 1, MPI_REAL, outside, 22, MPI_COMM_WORLD, stat, ierr)
@@ -1383,6 +1441,9 @@ subroutine GetRadLeftNeighbors(n, nrg, h)
 
   if(inside.ge.0) call MPI_SEND(h%elec, 1, MPI_REAL, inside, 22, MPI_COMM_WORLD, ierr)
   if(outside<npes) call MPI_RECV(hout%elec, 1, MPI_REAL, outside, 22, MPI_COMM_WORLD, stat, ierr)
+
+  if(inside.ge.0) call MPI_SEND(h%ex, 1, MPI_REAL, inside, 22, MPI_COMM_WORLD, ierr)
+  if(outside<npes) call MPI_RECV(hout%ex, 1, MPI_REAL, outside, 22, MPI_COMM_WORLD, stat, ierr)
 
 !*(rdist/rado)**(2/3)
 !!!!!!!!!!!!!!!!!!!!ENERGY!!!!!!!!!!!!!!!!!!!!!!
@@ -1410,6 +1471,10 @@ subroutine GetRadLeftNeighbors(n, nrg, h)
     ((rdist*h%elec)/(rado*hout%elec))**nT_exp, 1, MPI_DOUBLE_PRECISION, outside, 22, MPI_COMM_WORLD, ierr)
   if(inside.ge.0) call MPI_RECV(nTin%elec, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, stat, ierr)
 
+  if(outside<npes) call MPI_SEND(nrg%ex*&
+    ((rdist*h%ex)/(rado*hout%ex))**nT_ex, 1, MPI_DOUBLE_PRECISION, outside, 22, MPI_COMM_WORLD, ierr)
+  if(inside.ge.0) call MPI_RECV(nTin%ex, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, stat, ierr)
+  
   call MPI_BARRIER(MPI_COMM_WORLD, ierr)
 end subroutine GetRadLeftNeighbors
 
@@ -1451,6 +1516,10 @@ subroutine GetRadRightNeighbors(n, nrg, h)
   if(inside.ge.0) call MPI_SEND(n%elec*rdist/radi, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, ierr)
   if(outside<npes) call MPI_RECV(nout%elec, 1, MPI_DOUBLE_PRECISION, outside, 22, MPI_COMM_WORLD, stat, ierr)
 
+
+  if(inside.ge.0) call MPI_SEND(n%ex*rdist/radi, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, ierr)
+  if(outside<npes) call MPI_RECV(nout%ex, 1, MPI_DOUBLE_PRECISION, outside, 22, MPI_COMM_WORLD, stat, ierr)
+
 !!!!!!!!!!!!!!!!!!!!HEIGHT!!!!!!!!!!!!!!!!!!!!!!
   if(outside<npes) call MPI_SEND(h%sp, 1, MPI_DOUBLE_PRECISION, outside, 22, MPI_COMM_WORLD, ierr)
   if(inside.ge.0) call MPI_RECV(hin%sp, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, stat, ierr)
@@ -1469,6 +1538,10 @@ subroutine GetRadRightNeighbors(n, nrg, h)
 
   if(outside<npes) call MPI_SEND(h%elec, 1, MPI_DOUBLE_PRECISION, outside, 22, MPI_COMM_WORLD, ierr)
   if(inside.ge.0) call MPI_RECV(hin%elec, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, stat, ierr)
+  
+  if(outside<npes) call MPI_SEND(h%ex, 1, MPI_DOUBLE_PRECISION, outside, 22, MPI_COMM_WORLD, ierr)
+  if(inside.ge.0) call MPI_RECV(hin%ex, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, stat, ierr)
+
 !*(rdist/radi)**(2/3)
 !!!!!!!!!!!!!!!!!!!!ENERGY!!!!!!!!!!!!!!!!!!!!!!
   if(inside.ge.0) call MPI_SEND(nrg%sp*&
@@ -1499,6 +1572,11 @@ subroutine GetRadRightNeighbors(n, nrg, h)
     ((rdist*h%elec)/(radi*hin%elec))**nT_exp, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, ierr)
 !  if(inside.ge.0) call MPI_SEND(nrg%elec*(rdist/radi)**nT_exp, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, ierr)
   if(outside<npes) call MPI_RECV(nTout%elec, 1, MPI_DOUBLE_PRECISION, outside, 22, MPI_COMM_WORLD, stat, ierr)
+  
+  if(inside.ge.0) call MPI_SEND(nrg%ex*&
+    ((rdist*h%ex)/(radi*hin%ex))**nT_exp, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, ierr)
+!  if(inside.ge.0) call MPI_SEND(nrg%elec*(rdist/radi)**nT_exp, 1, MPI_DOUBLE_PRECISION, inside, 22, MPI_COMM_WORLD, ierr)
+  if(outside<npes) call MPI_RECV(nTout%ex, 1, MPI_DOUBLE_PRECISION, outside, 22, MPI_COMM_WORLD, stat, ierr)
   call MPI_BARRIER(MPI_COMM_WORLD, ierr)
 end subroutine GetRadRightNeighbors
 

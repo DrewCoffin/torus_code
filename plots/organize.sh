@@ -8,6 +8,7 @@ rm -r s3p/
 rm -r op/
 rm -r o2p/
 rm -r elec/
+rm -r ex/
 rm -r LOAD/
 rm -r MOUT/
 rm -r VSUB/
@@ -39,4 +40,5 @@ cd ../
 ./organizeSpecies.sh op
 ./organizeSpecies.sh o2p
 ./organizeSpecies.sh elec
+#./organizeSpecies.sh ex  
 

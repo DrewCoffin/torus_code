@@ -1,4 +1,4 @@
- Source correction coefficient :   3.2943446E-02
+ Source correction coefficient :   2.7172994E-02
  AVERAGE VALUES
  $$--------------------------------
  $$ INPUT PARAMETERS
@@ -13,28 +13,28 @@
  $$ Sys 4 Speed..........   1.050000    
  
  $$ GAUSSIAN SOURCE CHANGE VARIABLES
- $$ Neutral Variation....   1.000000    
- $$ Neutral Temp.........   149.0000    
+ $$ Neutral Variation....  0.8000000    
+ $$ Neutral Temp.........   249.0000    
  $$ Variation Duration...   30.00000    
- $$ Hot Elec Variation...  9.9999998E-03
- $$ Hot Elec Temp........   179.0000    
+ $$ Hot Elec Variation...  4.9999999E-03
+ $$ Hot Elec Temp........   279.0000    
  $$ Variation Duration...   60.00000    
  
- $$ Run Length(days)....   450.0000    
+ $$ Run Length(days)....   200.0000    
  $$ Outputs per day.....   1.000000    
  
  $$--------------------------------
  $$ IN-CODE ENERGY BUDGET
  $$--------------------------------
- $$ ionized S............  0.7631695    
- $$ ionized O............  0.3355343    
- $$ charge exchange S....  0.1093955    
- $$ charge exchange O....  0.2195328    
- $$ equil with ehot......   1.526783    
- $$ total in.............   2.954415    
- $$ puv..................   36.49317    
- $$ fast/ena.............  0.4658298    
- $$ transport............   1.482898    
- $$ total out............   4.381606    
- $$ in/out...............  0.6742768    
+ $$ ionized S............  0.5505347    
+ $$ ionized O............  0.2398376    
+ $$ charge exchange S....  7.7086829E-02
+ $$ charge exchange O....  0.1552967    
+ $$ equil with ehot......   1.292824    
+ $$ total in.............   2.315580    
+ $$ puv..................   48.98407    
+ $$ fast/ena.............  0.3859897    
+ $$ transport............  0.6809616    
+ $$ total out............   3.107954    
+ $$ in/out...............  0.7450497    
  
