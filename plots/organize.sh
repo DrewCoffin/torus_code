@@ -8,7 +8,7 @@ rm -r s3p/
 rm -r op/
 rm -r o2p/
 rm -r elec/
-rm -r ex/
+#rm -r ex/
 rm -r LOAD/
 rm -r MOUT/
 rm -r VSUB/

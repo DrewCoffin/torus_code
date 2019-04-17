@@ -995,6 +995,8 @@ end function az_loss
        + v%o2p_elec*(T%o2p - T%elec)&
        + v%elec_elecHot*(T%elecHot - T%elec)
 
+!    if( mype .eq. 0) print *, 'v%sp_elec =', v%sp_elec
+
     call lat_distribution(n, h, lat)
 
     rad = ft_rad(lat,T, ind, h) 

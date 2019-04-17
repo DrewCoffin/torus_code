@@ -1,4 +1,4 @@
- Source correction coefficient :   2.7172994E-02
+ Source correction coefficient :   4.8276644E-02
  AVERAGE VALUES
  $$--------------------------------
  $$ INPUT PARAMETERS
@@ -7,7 +7,7 @@
  $$ Hot Elec Fraction....  2.4999999E-03
  $$ Transport............  0.0000000E+00
  $$ Hot Elec Temp........   42.00000    
- $$ Subcorotation........   1.324563    
+ $$ Subcorotation........  9.2765585E-02
  $$ Sys 3 Hot Elec Frac..  0.3000000    
  $$ Sys 4 Hot Elec Amp...  0.4000000    
  $$ Sys 4 Speed..........   1.050000    
@@ -16,25 +16,25 @@
  $$ Neutral Variation....  0.8000000    
  $$ Neutral Temp.........   249.0000    
  $$ Variation Duration...   30.00000    
- $$ Hot Elec Variation...  4.9999999E-03
+ $$ Hot Elec Variation...  5.0000001E-02
  $$ Hot Elec Temp........   279.0000    
  $$ Variation Duration...   60.00000    
  
- $$ Run Length(days)....   200.0000    
+ $$ Run Length(days)....   100.0000    
  $$ Outputs per day.....   1.000000    
  
  $$--------------------------------
  $$ IN-CODE ENERGY BUDGET
  $$--------------------------------
- $$ ionized S............  0.5505347    
- $$ ionized O............  0.2398376    
- $$ charge exchange S....  7.7086829E-02
- $$ charge exchange O....  0.1552967    
- $$ equil with ehot......   1.292824    
- $$ total in.............   2.315580    
- $$ puv..................   48.98407    
- $$ fast/ena.............  0.3859897    
- $$ transport............  0.6809616    
- $$ total out............   3.107954    
- $$ in/out...............  0.7450497    
+ $$ ionized S............  0.8015222    
+ $$ ionized O............  0.4075587    
+ $$ charge exchange S....  8.0210239E-02
+ $$ charge exchange O....  0.1476758    
+ $$ equil with ehot......   1.513599    
+ $$ total in.............   2.950566    
+ $$ puv..................   25.74104    
+ $$ fast/ena.............  0.3309784    
+ $$ transport............   1.033984    
+ $$ total out............   3.510050    
+ $$ in/out...............  0.8406053    
  

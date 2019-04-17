@@ -134,8 +134,8 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
 !  if( vrad ) v_ion=1.0-abs(rdist-6.8)
-  if( vrad ) v_ion=0.85*exp(-(rdist-6.0)**2/1.0**2) + 0.9*exp(-(rdist-6.8)**2/(1.0**2))!1.0-abs(rdist-6.8)
-!  if( vrad ) v_ion= 2.5*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
+! if( vrad ) v_ion=0.85*exp(-(rdist-6.0)**2/1.0**2) + 1.0*exp(-(rdist-6.8)**2/(0.5**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion= 1.2*exp(-(rdist-6.8)**2/(0.5**2))!1.0-abs(rdist-6.8)
 
   if( .not. vrad .and. .not. vmass) v_ion=1.05
   if( vrad .and. v_ion .lt. 0.0 ) v_ion=0.0
@@ -195,9 +195,6 @@ subroutine model()
   n%elec = (n%sp + n%op + 2 * (n%s2p + n%o2p) + 3 * n%s3p) !/ (1.0 - n%protons)
   n%elecHot = n%fh * n%elec! / (1.0-n%fh)
 !  n%elecHot = 0.01 * n%elec
-
-
-! Add test population of hot electrons on outer edge of domain. Do the electrons diffuse inward before reaching equilibrium?
 
   n%fc = 1.0 - n%fh
 
@@ -269,7 +266,7 @@ subroutine model()
 
   n%fc= 1.0 - n%fh   
 
-  !n%elec = ((n%sp + n%op) + 2.0*(n%s2p + n%o2p) + 3.0 * n%s3p)!/(1.0-n%protons)
+  n%elec = ((n%sp + n%op) + 2.0*(n%s2p + n%o2p) + 3.0 * n%s3p)!/(1.0-n%protons)
   !n%elec = n%elec + 0800.0 * test_multiplier * (rdist/10.0)**(5.0)
   n%elecHot = n%elec * n%fh!/n%fc
   nrg%elec = n%elec * T%elec
@@ -298,7 +295,7 @@ subroutine model()
   call get_scale_heights(h, T, n)
 
   output_it = 0 !This variable determine when data is output. 
-  Io_loc=0!mod(Io_loc-(dt*v_Io), torus_circumference)      !Io's location in the torus
+  Io_loc=mod(Io_loc+(dt*v_Io), torus_circumference)      !Io's location in the torus
   sys4_loc=(110.0/360.0)*torus_circumference    !The location of the sys4 hot electron population
   file_num=0    !Output files are numbered so they can be assembled as a animated visualization (refer to scripts)
 
@@ -321,19 +318,6 @@ subroutine model()
 
 !----------------------time dependent neutral source rate-------------------------------------------------------------------------------
     var =exp(-((tm-neutral_t0)/neutral_width)**2)
-
-  !  net_source = net_source0*(1.0 + neutral_amp*var) !Ubiquitous source
-    !if( moving_Io ) then
-    !  if( mype .eq. int(Io_loc*LNG_GRID/torus_circumference) )then
-    !    net_source = LNG_GRID*net_source0*(1.0+neutral_amp*var)
-    !  else
-    !    if( i .eq. 1 ) then
-    !      net_source = net_source0*(1.0+neutral_amp*var)
-    !    else
-    !      net_source=0
-    !    endif
-    !  endif
-    !endif
 
     if( moving_Io ) then
       if( mype .eq. int(Io_loc*LNG_GRID/torus_circumference) )then
@@ -379,7 +363,7 @@ subroutine model()
     if( vrad .and. abs(ave_dNL2_dL) .gt. 0.0) then   !for Pontius equation
       !print *, "average flux content gradient: ", abs(ave_dNL2_dL)
 !       elecHot_multiplier=elecHot_multiplier*(1.0+2.00*((mass_loading(mype+1)/ave_loading)-1.0)) !Pontius   
-      elecHot_multiplier=elecHot_multiplier*(1.0+1.2*((dNL2_dL(mype+1)/ave_dNL2_dL))) !-1.0))  !Hess
+      elecHot_multiplier=elecHot_multiplier*(1.0+2.0*((dNL2_dL(mype+1)/ave_dNL2_dL)))!-1.0))  !Hess
 !        elecHot_multiplier=elecHot_multiplier*(1.0+0.8*((nl2_tot(mype+1)/ave_nl2_tot)-1.0))   !other Hess suggestion
 !       if (mype .eq. 1) then
 !          write(*,*) 'Hot electrons.....',elecHot_multiplier,mass_loading(mype+1),ave_loading
