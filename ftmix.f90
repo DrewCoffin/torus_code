@@ -14,7 +14,6 @@ CONTAINS
 
     ftint_mix%elec = n%elec
     ftint_mix%elecHot = n%elecHot
-    ftint_mix%ex = n%ex
     ftint_mix%s = n%s
     ftint_mix%o = n%o
     ftint_mix%fc = n%fc

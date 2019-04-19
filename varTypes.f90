@@ -30,21 +30,21 @@ MODULE varTypes
 !! Make necessary structures to mimic Steffl Onebox model
 !!//////////////////////////////////////////////////
   TYPE ::  density  !n in Steffl Onebox model
-    double precision  :: ex = 0.0, sp=0.0, s2p=0.0, s3p=0.0, s4p=0.0, op=0.0, o2p=0.0, elec=0.0, elecHot=0.0, s=0.0, o=0.0 
+    double precision  :: sp=0.0, s2p=0.0, s3p=0.0, s4p=0.0, op=0.0, o2p=0.0, elec=0.0, elecHot=0.0, s=0.0, o=0.0 
     double precision  :: fc=0.0, fh=0.0, protons=0.0
   END TYPE density
 
   TYPE :: nT 
-    double precision  :: ex=0.0, sp=0.0, s2p=0.0, s3p=0.0, s4p=0.0, op=0.0, o2p=0.0, elec=0.0, elecHot=0.0
+    double precision  :: sp=0.0, s2p=0.0, s3p=0.0, s4p=0.0, op=0.0, o2p=0.0, elec=0.0, elecHot=0.0
   END TYPE nT
 
   TYPE :: temp !T in Steffl Onebox model
-    double precision  :: ex = 0.0, sp=0.0, s2p=0.0, s3p=0.0, s4p=0.0, op=0.0, o2p=0.0, elec=0.0, elecHot=0.0
+    double precision  :: sp=0.0, s2p=0.0, s3p=0.0, s4p=0.0, op=0.0, o2p=0.0, elec=0.0, elecHot=0.0
     double precision  :: pu_s=0.0, pu_o=0.0
   END TYPE temp
 
   TYPE :: height !h in Steffl Onebox model
-    double precision  :: s=0.0, sp=0.0, s2p=0.0, s3p=0.0, s4p=0.0, o=0.0, op=0.0, o2p=0.0, elec=0.0, ex=0.0
+    double precision  :: s=0.0, sp=0.0, s2p=0.0, s3p=0.0, s4p=0.0, o=0.0, op=0.0, o2p=0.0, elec=0.0
   END TYPE height
 
 
@@ -53,8 +53,7 @@ MODULE varTypes
     double precision  :: sp_s2p, sp_s3p, sp_s4p, sp_op, sp_o2p, s2p_s3p, s2p_s4p, s2p_op, s2p_o2p
     double precision  :: s3p_s4p, s3p_op, s3p_o2p, s4p_op, s4p_o2p, op_o2p
     double precision  :: sp_elec, s2p_elec, s3p_elec, s4p_elec, op_elec, o2p_elec
-    double precision  :: sp_ex, s2p_ex, s3p_ex, s4p_ex, op_ex, o2p_ex
-    double precision  :: ex_elec, elec_ex, ex_elecHot, sp_elecHot, s2p_elecHot, s3p_elecHot, s4p_elecHot, op_elecHot, o2p_elecHot, elec_elecHot
+    double precision  :: sp_elecHot, s2p_elecHot, s3p_elecHot, s4p_elecHot, op_elecHot, o2p_elecHot, elec_elecHot
   END TYPE nu
 
   TYPE :: r_ind
@@ -74,7 +73,7 @@ MODULE varTypes
 
   TYPE :: lat_dist
     double precision  :: z(LAT_SIZE), sp(LAT_SIZE), s2p(LAT_SIZE), s3p(LAT_SIZE) !LAT_SIZE declared as parameter above
-    double precision  :: ex(LAT_SIZE), s4p(LAT_SIZE), op(LAT_SIZE), o2p(LAT_SIZE), elec(LAT_SIZE), elecHot(LAT_SIZE)
+    double precision  :: s4p(LAT_SIZE), op(LAT_SIZE), o2p(LAT_SIZE), elec(LAT_SIZE), elecHot(LAT_SIZE)
   END TYPE lat_dist
  
   TYPE :: ft_int
@@ -102,7 +101,7 @@ MODULE varTypes
 
   TYPE :: ft_mix
     double precision  ::sp, s2p, s3p, op, o2p
-    double precision  ::elec, elecHot, ex, s, o, fc, fh
+    double precision  ::elec, elecHot, s, o, fc, fh
   END TYPE ft_mix
 
   TYPE :: recomb

@@ -19,7 +19,7 @@ PROGRAM Onebox
   USE MPI
   USE DIMENSIONS
 
-  IMPLICIT  REAL*8 (A-Z)
+  IMPLICIT NONE
 
   character(len=8)    ::x1
   real                ::thing1
@@ -55,10 +55,10 @@ subroutine model()
   type(density)       ::n, ni, np, nl2, nl2e
   real                ::const
   type(temp)          ::T, Ti, Tp
-  double precision    ::Te0, Ti0, Teh0, ntroptot
+  real                ::Te0, Ti0, Teh0
   type(height)        ::h, hi
   type(r_ind)         ::ind
-  type(nT)            ::nrg, nTi, nTp, ntrop
+  type(nT)            ::nrg, nTi, nTp
   integer             ::i, j, k
   real                ::var, n_height
   type(nu)            ::v, vi
@@ -134,9 +134,7 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
 !  if( vrad ) v_ion=1.0-abs(rdist-6.8)
- if( vrad ) v_ion=0.85*exp(-(rdist-6.0)**2/1.0**2) + 0.9*exp(-(rdist-6.8)**2/(1.0**2))!1.0-abs(rdist-6.8)
-!  if( vrad ) v_ion= 1.2*exp(-(rdist-6.8)**2/(0.5**2))!1.0-abs(rdist-6.8)
-
+  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/1.0**2) + 2.5*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
   if( .not. vrad .and. .not. vmass) v_ion=1.05
   if( vrad .and. v_ion .lt. 0.0 ) v_ion=0.0
 !----------------------vrad-------------------------------------------------------------------------------
@@ -176,9 +174,9 @@ subroutine model()
 
 
   Te0 = 5.0
-  Ti0 = 70.0 
+  Ti0 = 70.0
   Teh0= tehot*(rdist/6.0)**tehot_alpha
-  !if(Teh0 .gt. 400.0) Teh0=400.0
+  if(Teh0 .gt. 400.0) Teh0=400.0
   fehot_const= fehot_const*(rdist/6.0)**fehot_exp
   n%fh=fehot_const
 !  trans = 4.62963e-7
@@ -192,7 +190,7 @@ subroutine model()
 
 !  net_source=(source/((10.0**radgrid)*source_mult))
 
-  n%elec = (n%sp + n%op + 2 * (n%s2p + n%o2p) + 3 * n%s3p) !/ (1.0 - n%protons)
+  n%elec = (n%sp + n%op + 2 * (n%s2p + n%o2p) + 3 * n%s3p) !* (1.0 - n%protons)
   n%elecHot = n%fh * n%elec! / (1.0-n%fh)
 !  n%elecHot = 0.01 * n%elec
 
@@ -266,8 +264,7 @@ subroutine model()
 
   n%fc= 1.0 - n%fh   
 
-  n%elec = ((n%sp + n%op) + 2.0*(n%s2p + n%o2p) + 3.0 * n%s3p)/(1.0-n%protons)
-  !n%elec = n%elec + 0800.0 * test_multiplier * (rdist/10.0)**(5.0)
+  n%elec = ((n%sp + n%op) + 2.0*(n%s2p + n%o2p) + 3.0 * n%s3p)!/(1.0-n%protons)
   n%elecHot = n%elec * n%fh!/n%fc
   nrg%elec = n%elec * T%elec
   nrg%elecHot = n%elecHot * T%elecHot
@@ -295,13 +292,11 @@ subroutine model()
   call get_scale_heights(h, T, n)
 
   output_it = 0 !This variable determine when data is output. 
-  Io_loc=mod(Io_loc+(dt*v_Io), torus_circumference)      !Io's location in the torus
+  Io_loc=0      !Io's location in the torus
   sys4_loc=(110.0/360.0)*torus_circumference    !The location of the sys4 hot electron population
   file_num=0    !Output files are numbered so they can be assembled as a animated visualization (refer to scripts)
 
   nl2=NLsquared(n, T, nl2e, h)
-
-  ntrop = entropy(n, T, h, ntroptot)
 
   mass_loading(mype+1)=1e-33 !set to arbitarily small value
   ave_loading=1e-33
@@ -319,16 +314,19 @@ subroutine model()
 !----------------------time dependent neutral source rate-------------------------------------------------------------------------------
     var =exp(-((tm-neutral_t0)/neutral_width)**2)
 
+  !  net_source = net_source0*(1.0 + neutral_amp*var) !Ubiquitous source
     if( moving_Io ) then
       if( mype .eq. int(Io_loc*LNG_GRID/torus_circumference) )then
-!        print *, "Io location is", Io_loc
-!        print *, "Io processor is", int(Io_loc*LNG_GRID/torus_circumference)
-        net_source = 0.3*LNG_GRID*net_source0!*(1.0+neutral_amp*var)
+        net_source = LNG_GRID*net_source0*(1.0+neutral_amp*var)
       else
-        net_source = 0.7*net_source0*(1.0 + neutral_amp*var)
+        if( i .eq. 1 ) then
+          net_source = net_source0*(1.0+neutral_amp*var)
+        else
+          net_source=0
+        endif
       endif
     endif
-    
+
     if( .not. moving_Io ) then
       net_source = (net_source0*(1.0 + neutral_amp*var))!/LNG_GRID !ubiquitous
     endif
@@ -361,10 +359,9 @@ subroutine model()
 
 !    if( vmass .and. mass_loading(mype+1) .gt. 0.0) then   !for Pontius equation
     if( vrad .and. abs(ave_dNL2_dL) .gt. 0.0) then   !for Pontius equation
-      !print *, "average flux content gradient: ", abs(ave_dNL2_dL)
-!       elecHot_multiplier=elecHot_multiplier*(1.0+2.00*((mass_loading(mype+1)/ave_loading)-1.0)) !Pontius   
-      elecHot_multiplier=elecHot_multiplier*(1.0+1.2*((dNL2_dL(mype+1)/ave_dNL2_dL)))!-1.0))  !Hess
-!        elecHot_multiplier=elecHot_multiplier*(1.0+0.8*((nl2_tot(mype+1)/ave_nl2_tot)-1.0))   !other Hess suggestion
+       elecHot_multiplier=elecHot_multiplier*(1.0+2.0*((mass_loading(mype+1)/ave_loading)-1.0))    
+!       elecHot_multiplier=elecHot_multiplier*(1.0+1.3*((dNL2_dL(mype+1)/ave_dNL2_dL)-1.0))    
+!       elecHot_multiplier=elecHot_multiplier*(1.0+2.8*((nl2_tot(mype+1)/ave_nl2_tot)-1.0))    
 !       if (mype .eq. 1) then
 !          write(*,*) 'Hot electrons.....',elecHot_multiplier,mass_loading(mype+1),ave_loading
 !       endif
@@ -376,13 +373,7 @@ subroutine model()
 
 !----------------------Pontius subcorotation-------------------------------------------------------------------------------
       if( vmass ) then
-        domega=(((mass_loading(mype+1)*volume*LNG_GRID)*57.0*(rdist)**4)/(0.1*sqrt(1.0-(1.0/(rdist)))*4.0*PI*0.001*((Rj*1.0e3)**3)*(4.2e-4)**2))
-!        57.0 is corotation speed, 4*pi is geometry factor, and 4.2e-4 is B_J
-!        Term after 4*pi is sigma_p
-        v_ion = rdist*Rj*domega
-        !if( mype .eq. 1 ) then
-        !    print *, "v_ion = ", v_ion    
-        !endif
+        v_ion=1.0+(((mass_loading(mype+1)*volume*LNG_GRID)*57.0*(rdist)**5)/(0.1*sqrt(1.0-(1.0/(rdist)))*4.0*PI*1.5*((Rj*1.0e3)**2)*(4.2e-4)**2))
 !        n%fh=n%fh*((mass_loading(mype+1)/ave_loading)**(15.0)) !Should replace sys4 population.
       endif
 !----------------------Pontius subcorotation-------------------------------------------------------------------------------
@@ -390,18 +381,18 @@ subroutine model()
 
  !   elecHot_multiplier=elecHot_multiplier*(1.0+0.5*((mass_loading(mype+1)/ave_loading)-1.0))
 
-    n%fh  = fehot_const * (1.0 + hote_amp * var)*elecHot_multiplier !Time variation of hot electrons
-!    if (n%fh .gt. 4.0e-2) then  !limit max f_eh                   
-!       n%fh = 4.0e-2
-!    endif
+    n%fh  = fehot_const * (1.0 + hote_amp * var)*elecHot_multiplier
+    if (n%fh .gt. 4.0e-3) then  !limit max f_eh
+       n%fh = 4.0e-3
+    endif
     
-!    do j = 1,12
-!       call MPI_BARRIER(MPI_COMM_WORLD, ierr)
-!       if (mype+1 .eq. j .and. abs(ave_dNL2_dL) .gt. 0.0) then
+    do j = 1,12
+       call MPI_BARRIER(MPI_COMM_WORLD, ierr)
+       if (mype+1 .eq. j .and. abs(ave_dNL2_dL) .gt. 0.0) then
 !                   write(*,*) 'fh (%)....',mype,n%fh*100.
-!          write(*,*) 'f_eh....',mype,n%fh
-!    endif
-!    enddo
+          write(*,*) 'f_eh....',mype,n%fh
+    endif
+    enddo
 
 
     ni%fh = n%fh
@@ -483,20 +474,20 @@ subroutine model()
     numerical_c_ion = v_ion*dt/dx
 !    if(mype .eq. 0) print *, v_ion, ave_loading*volume*LNG_GRID, mass_loading(mype+1)/ave_loading
 
-!    if( i .eq. nit .and. .true. ) then
-!       open(unit=15, file='sub.dat', status='unknown',position='append')
-!       do j=1, npes
-!         if(mype .eq. j) write(15,*) MOD(longitude, 360.0), v_ion,  rdist
-!         if( mod(j-1,LNG_GRID) .eq. 0) write (15,*) ""
-!       enddo
-!       close(15)
-!    end if
+    if( i .eq. nit .and. .true. ) then
+       open(unit=15, file='sub.dat', status='unknown',position='append')
+       do j=1, npes
+         if(mype .eq. j) write(15,*) MOD(longitude, 360.0), v_ion,  rdist
+         if( mod(j-1,LNG_GRID) .eq. 0) write (15,*) ""
+       enddo
+       close(15)
+    end if
 
     call get_scale_heights(h, T, n)
 
     call energyBudget(n, h, T, dep, ind, ft, lat, v, nrgy)
 
-    if (nint(output_it)+1 .eq. i .and. (OUTPUT_MIXR .or. OUTPUT_DENS .or. OUTPUT_TEMP .or. OUTPUT_INTS .or. OUTPUT_PUV .or. OUTPUT_ENTR)) then !Output at set intervals when OUTPUT_MIX is true (from debug.f90)
+    if (nint(output_it)+1 .eq. i .and. (OUTPUT_MIXR .or. OUTPUT_DENS .or. OUTPUT_TEMP .or. OUTPUT_INTS)) then !Output at set intervals when OUTPUT_MIX is true (from debug.f90)
         miscOutput=mass_loading(mype+1)
         day = (i-1.0)*dt/86400
         write (x1, '(I4.4)') file_num
@@ -518,17 +509,12 @@ subroutine model()
                  call OtherOutput(mass_loading(mype+1)/ave_loading, longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'LOAD')
                  call OtherOutput3D(mass_loading(mype+1), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'LOAD')
                  call OtherOutput3D(v_ion, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'VSUB')
-!                 call OtherOutput3D(real(ntroptot), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'TENT')
-!                 call OtherOutput3D(nrgy%Puv_sp, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'PUV_')
+                 call OtherOutput3D(nrgy%Puv_sp, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'PUV_')
                  call OtherOutput(real(miscOutput), longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'MOUT')
-                 call ElecOutput3D(real(n%fh), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'FEH_')
-!		print *, real(n%fh), rdist, longitude+((j+1)/(LNG_GRID+1))*360.0, day_char
                  if( j .eq. LNG_GRID ) call spacer3D(day_char, 'DENS')
                  if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'LOAD')
                  if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'VSUB')
- !                if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'TENT')
- !                if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'PUV_')
-                 if( j .eq. LNG_GRID ) call Elecspacer3D(day_char, 'FEH_')
+                 if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'PUV_')
               endif 
               if(OUTPUT_NL2) then
                 call IonElecOutput(nl2%sp, nl2%s2p, nl2%s3p, nl2%op, nl2%o2p,nl2%sp+nl2%s2p+nl2%s3p+nl2%op+nl2%o2p,&
@@ -565,21 +551,6 @@ subroutine model()
                  write(120,*) longitude, intensity 
                  close(120)
               end if
-              if(OUTPUT_PUV) then 
-                 call IonElecOutput(nrg%sp, nrg%s2p, nrg%s3p, nrg%op, nrg%o2p, nrg%elec, & !longitude, day_char, 'PUV_')
-                   longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'PUV_')
-                 call IonElecOutput3D(nrg%sp, nrg%s2p, nrg%s3p, nrg%op, nrg%o2p, nrg%elec, & !longitude, day_char, 'PUV_')
-                   longitude, rdist, day_char, 'PUV_')
-                 !call OtherOutput3D(nrgy%Puv_sp, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'PUV_')
-                if( j .eq. LNG_GRID ) call spacer3D(day_char, 'PUV_')
-              end if
-              if(OUTPUT_ENTR) then 
-                 call IonElecOutput(ntrop%sp, ntrop%s2p, ntrop%s3p, ntrop%op, ntrop%o2p, ntrop%elec, & longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'ENTR')
-                 call IonElecOutput3D(ntrop%sp, ntrop%s2p, ntrop%s3p, ntrop%op, ntrop%o2p, ntrop%elec, & longitude, rdist, day_char, 'ENTR')
-!                 call IonElecOutput(nl2e%sp, nl2e%s2p, nl2e%s3p, nl2e%op, nl2e%o2p, nl2e%elec, & longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'ENTR')
-!                 call IonElecOutput3D(nl2e%sp, nl2e%s2p, nl2e%s3p, nl2e%op, nl2e%o2p, nl2e%elec, & longitude, rdist, day_char, 'ENTR')
-                if( j .eq. LNG_GRID ) call spacer3D(day_char, 'ENTR')
-              end if
 !              open(unit=200, file='feh'//day_char//'.dat', status='unknown', position='append')
 !              open(unit=210, file='vr'//day_char//'.dat', status='unknown', position='append')
 !              open(unit=220, file='source'//day_char//'.dat', status='unknown', position='append')
@@ -615,7 +586,7 @@ subroutine dens_ave(n_ave, n)!, i)
   type(density)       ::n
 !  integer             ::i
 
-  n_tot=n%sp+n%s2p+n%s3p+n%op+n%o2p
+  n_tot=n%sp !+n%s2p+n%s3p+n%op+n%o2p
   call MPI_REDUCE(n_tot, n_ave, 1, MPI_REAL, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
   n_ave=n_ave/LNG_GRID
   call MPI_BCAST(n_ave, 1, MPI_REAL, 0, MPI_COMM_WORLD, ierr)
@@ -809,14 +780,12 @@ subroutine Grid_transport(n, T, nrg, dep, h, nl2, nl2e)
   do i=1, aztrans_it
     call az_transport(n, nrg)
   enddo
-  !print *, "Pre-update density, temp = ", n%sp, T%sp
   call update_temp(n, nrg, T)
-  !print *, "Post-update density, temp = ", n%sp, T%sp
   isNaN=NaNcatch(n%sp, -1, mype)
   nl2=NLsquared(n, T, nl2e, h)
 !  if(mype .eq. 0) print*, n%sp, n%s2p, n%s3p, n%op, n%o2p
 !  if(mype .eq. 0) print*, nl2%sp, nl2%s2p, nl2%s3p, nl2%op, nl2%o2p
-  !isNaN=NaNcatch(nl2%sp, 0, mype)
+  isNaN=NaNcatch(nl2%sp, 0, mype)
   do i=1, radtrans_it
     call transport_nl2(nl2, nl2e, dll0, dlla)
 !    if(mype .eq. 0) print *, i 
@@ -825,7 +794,6 @@ subroutine Grid_transport(n, T, nrg, dep, h, nl2, nl2e)
   call iterate_NL2(nl2, nl2e, n, T, h)
 
   T%sp=(nl2e%sp/(nl2%sp*rdist**2))**(3.0/4.0)
-  !if(mype .eq. 0) print *, "T%sp, nl2e%sp, nl2%sp = ", T%sp, nl2e%sp, nl2%sp
   nrg%sp=n%sp*T%sp
   T%s2p=(nl2e%s2p/(nl2%s2p*rdist**2))**(3.0/4.0)
   nrg%s2p=n%s2p*T%s2p
@@ -842,7 +810,7 @@ subroutine Grid_transport(n, T, nrg, dep, h, nl2, nl2e)
 !  T%op=(nl2e%op/(nl2%op*rdist**2))**(3/4)
 !  T%o2p=(nl2e%o2p/(nl2%o2p*rdist**2))**(3/4)
 
-  !isNaN=NaNcatch(nl2%sp, 10, mype)
+  isNaN=NaNcatch(nl2%sp, 10, mype)
 !  if(mype .eq. 0) print*, n%sp, n%s2p, n%s3p, n%op, n%o2p
 !  if(mype .eq. 0) print*, ""
   n%elec=(n%sp + 2.0*n%s2p + 3.0*n%s3p + n%op + 2.0*n%o2p)/(1.0-n%protons) 
@@ -869,6 +837,7 @@ subroutine az_transport(n, nrg)
     n%o=LaxWendroff(nleft%o, n%o, nright%o, cn, cn, cn)
     n%op=LaxWendroff(nleft%op, n%op, nright%op, cleft, c, cright)
     n%o2p=LaxWendroff(nleft%o2p, n%o2p, nright%o2p, cleft, c, cright)
+!double precision function LaxWendroff(left, center, right, uleft, u, uright)
 
     nrg%sp=LaxWendroff(nTleft%sp, nrg%sp, nTright%sp, cleft, c, cright)
     nrg%s2p=LaxWendroff(nTleft%s2p, nrg%s2p, nTright%s2p, cleft, c, cright)
@@ -1487,5 +1456,4 @@ subroutine GetRadRightNeighbors(n, nrg, h)
 end subroutine GetRadRightNeighbors
 
 END PROGRAM Onebox
-
 

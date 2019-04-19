@@ -149,7 +149,7 @@ MODULE TIMESTEP
     n%o2p = nold%o2p + dt * Fo2p
     call gtzero(n%o2p)
     n%elec=(n%sp + 2.0*n%s2p + 3.0*n%s3p + n%op + 2.0*n%o2p)/(1.0-n%protons) 
-    n%elecHot=n%fh*n%elec!/(1.0-n%fh)
+    n%elecHot=n%fh*n%elec/(1.0-n%fh)
 
   end subroutine fluxCorrect
 
