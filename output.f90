@@ -156,7 +156,7 @@ character(len=4) ::quantity, day_char
 end subroutine OtherOutput
 
 SUBROUTINE OtherOutput3D(val, longitude, rdist, day_char, quantity)
-real             ::longitude, rdist 
+real             ::longitude, rdist, val
 character(len=4) ::quantity, day_char 
      
   open(unit=101, file=''//quantity//'.'//day_char//'_3D.dat' , status='unknown', position='append')

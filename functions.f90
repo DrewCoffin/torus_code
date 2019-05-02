@@ -409,6 +409,7 @@ end function az_loss
     if( Euler ) l=l+az_loss(v_neutral,n%s)
     l=l/(ROOTPI*h%s)
     mass_loading(mype+1)=l*32.0*mp+mass_loading(mype+1)
+    !if( mype .eq. 1 ) print *, 'S mass load = ', mass_loading(mype+1)
     F_s = s-l
 
   end function F_s

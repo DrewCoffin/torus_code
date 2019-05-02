@@ -12,6 +12,7 @@ mv VSUB*.dat plots/.
 mv PUV*.dat plots/.
 mv FEH*.dat plots/.
 mv ENTR*.dat plots/.
+#mv ERAT*.dat plots/.
 
 cd plots
 
@@ -28,6 +29,7 @@ cd plots
   mv VSUB*.dat data/.
   mv FEH*.dat data/.
   mv ENTR*.dat data/.
+ # mv ERAT*.dat data/.
 #  rm intensity*.dat
 
   ./organize.sh

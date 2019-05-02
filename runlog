@@ -1,40 +1,40 @@
- Source correction coefficient :   2.9422628E-02
+ Source correction coefficient :   2.9422630E-02
  AVERAGE VALUES
  $$--------------------------------
  $$ INPUT PARAMETERS
  $$--------------------------------
- $$ Source Rate..........  3.0000000E+28
+ $$ Source Rate..........  1.9999999E+28
  $$ Hot Elec Fraction....  2.4999999E-03
  $$ Transport............  0.0000000E+00
  $$ Hot Elec Temp........   42.00000    
- $$ Subcorotation........   1.324563    
+ $$ Subcorotation........   1.079389    
  $$ Sys 3 Hot Elec Frac..  0.3000000    
  $$ Sys 4 Hot Elec Amp...  0.4000000    
  $$ Sys 4 Speed..........   1.050000    
  
  $$ GAUSSIAN SOURCE CHANGE VARIABLES
- $$ Neutral Variation....  0.8000000    
+ $$ Neutral Variation....  0.0000000E+00
  $$ Neutral Temp.........   249.0000    
  $$ Variation Duration...   30.00000    
- $$ Hot Elec Variation...  5.0000001E-02
+ $$ Hot Elec Variation...  0.0000000E+00
  $$ Hot Elec Temp........   279.0000    
  $$ Variation Duration...   60.00000    
  
- $$ Run Length(days)....   200.0000    
+ $$ Run Length(days)....   300.0000    
  $$ Outputs per day.....   1.000000    
  
  $$--------------------------------
  $$ IN-CODE ENERGY BUDGET
  $$--------------------------------
- $$ ionized S............  0.8480990    
- $$ ionized O............  0.3725621    
- $$ charge exchange S....  0.1231873    
- $$ charge exchange O....  0.2461925    
- $$ equil with ehot......   1.594523    
- $$ total in.............   3.184564    
- $$ puv..................   40.62329    
- $$ fast/ena.............  0.4884919    
- $$ transport............   1.699935    
- $$ total out............   4.727383    
- $$ in/out...............  0.6736421    
+ $$ ionized S............  0.1387621    
+ $$ ionized O............  3.6264766E-02
+ $$ charge exchange S....  9.4407998E-02
+ $$ charge exchange O....  0.1284004    
+ $$ equil with ehot......  1.9426443E-02
+ $$ total in.............  0.4172618    
+ $$ puv..................   2.372232    
+ $$ fast/ena.............  9.0130657E-02
+ $$ transport............  0.6305441    
+ $$ total out............  0.8689393    
+ $$ in/out...............  0.4801967    
  

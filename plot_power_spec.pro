@@ -186,7 +186,7 @@ stream = video.addvideostream(xsz, ysz, framerate)
 
 cnt = 0
 ts = 1
-for i = 100,200,ts do begin
+for i = 100,300,ts do begin
    w = window(window_title='torus',dimensions=[xsz,ysz],margin=0,$
               buffer=1)
    
@@ -205,7 +205,7 @@ w = window(dimensions=[600,1200])
 ind=1
 
 ;plot time series
-for i = 2,10,2   do begin
+for i = 2,12,2   do begin
    t = findgen(cnt)*ts
    L = pflr(i)
    whL = where(pflr eq L) 
@@ -251,8 +251,8 @@ for i = 2,10,2   do begin
 endfor   
    l = legend(target=[ps1,ps3])
    ps1.xtitle = 'Frequency (rad/day)'
-   t = text(0.225,0.001,'$\lambda_{IV}$',/data,orientation=90,font_size=16)
-   t = text(1.08,0.001,'$\lambda_{Io}$',/data,orientation=90,font_size=14)
+   t = text(0.225,0.011,'$\lambda_{IV}$',/data,orientation=90,font_size=16)
+   t = text(1.08,0.011,'$\lambda_{Io}$',/data,orientation=90,font_size=14)
    t = text(5.8,0.95,'S$^{+}$',/normal,font_size=18)
    t.Save,'fft.pdf'
 video.cleanup

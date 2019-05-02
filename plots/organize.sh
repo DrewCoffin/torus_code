@@ -11,6 +11,7 @@ rm -r elec/
 rm -r LOAD/
 rm -r MOUT/
 rm -r VSUB/
+#rm -r ERAT/
 #rm -r OXGN/
 #rm -r SLFR/
 
@@ -19,6 +20,7 @@ rm -r VSUB/
 mkdir LOAD
 mkdir MOUT
 mkdir VSUB
+#mkdir ERAT
 
 good=$?
 if [ $good -ne 0 ]
@@ -29,6 +31,7 @@ fi
 mv LOAD*.dat LOAD/.
 mv MOUT*.dat MOUT/.
 mv VSUB*.dat VSUB/.
+#mv ERAT*.dat ERAT/.
 #mv OXGN*.dat OXGN/.
 #mv SLFR*.dat SLFR/.
 
