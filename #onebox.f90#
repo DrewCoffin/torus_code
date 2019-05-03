@@ -294,7 +294,7 @@ subroutine model()
   call get_scale_heights(h, T, n)
 
   output_it = 0 !This variable determine when data is output. 
-  Io_loc=mod(Io_loc+(dt*v_Io), torus_circumference)  !0      !Io's location in the torus
+  Io_loc=mod(Io_loc+(dt*v_Io), torus_circumference) !0      !Io's location in the torus
   sys4_loc=(110.0/360.0)*torus_circumference    !The location of the sys4 hot electron population
   file_num=0    !Output files are numbered so they can be assembled as a animated visualization (refer to scripts)
 
@@ -321,13 +321,13 @@ subroutine model()
   !  net_source = net_source0*(1.0 + neutral_amp*var) !Ubiquitous source
     if( moving_Io ) then
       if( mype .eq. int(Io_loc*LNG_GRID/torus_circumference) )then
-        net_source = 0.3*LNG_GRID*net_source0*(1.0+neutral_amp*var)
+        net_source = LNG_GRID*net_source0*(1.0+neutral_amp*var)
       else
-       ! if( i .eq. 1 ) then
-       net_source = 0.7*net_source0*(1.0+neutral_amp*var)
-       ! else
-        !  net_source=0
-        !endif
+        if( i .eq. 1 ) then
+          net_source = net_source0*(1.0+neutral_amp*var)
+        else
+          net_source=0
+        endif
       endif
     endif
 
