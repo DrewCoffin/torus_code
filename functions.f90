@@ -153,6 +153,7 @@ MODULE FUNCTIONS
     integer        :: i
 
     ft_int1%cx(1)  = rootpi * r_ind1%cx(1)  * n1%sp  * n1%s2p  * sp_s2p
+    !if( mype .eq. 0 ) print *, 'r_ind1%cx(1) = ', r_ind1%cx(1)
     ft_int1%cx(2)  = rootpi * r_ind1%cx(2)  * n1%s   * n1%sp   * s_sp
     ft_int1%cx(3)  = rootpi * r_ind1%cx(3)  * n1%s   * n1%s2p  * s_s2p
     ft_int1%cx(4)  = rootpi * r_ind1%cx(4)  * n1%s   * n1%s2p  * s_s2p

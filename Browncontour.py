@@ -2,12 +2,12 @@ import numpy as np
 import scipy.interpolate as ip
 import matplotlib.pyplot as plt
 
-read = np.genfromtxt('./Brown.dat', delimiter=', ', skiprows = 3)
+read = np.genfromtxt('./Brown.dat', delimiter=',', skiprows = 3)
 
-a,l,w,f = read[:,0], read[:,1], read[:,2], read[:,3]
+a,l,w,f = read[:,0], read[:,1], read[:,2], read[:,4]
 nca, ncl, ncw = 22, 17, 32
 
-fig, (ax1, ax2, ax3) = plt.subplots(nrows=3) #, figsize=(10,3))
+fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, figsize=(8,8))
 
 #plt.subplot(131)
 ax1.set_title('FWHM of 0.8 Rj')
@@ -50,10 +50,12 @@ ax3.set_ylim(min(wa),max(wa))
 
 plt.tight_layout()
 
+#plt.plot()
+
 fig.subplots_adjust(right=0.8)
 cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.75])
 cbar = fig.colorbar(concol3, cax=cbar_ax)
-cbar.set_label('Frequency (rad per day)')
+cbar.set_label('% Deviation from corotation')
 
 plt.savefig('Browncontour.png')
 plt.show()

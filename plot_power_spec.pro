@@ -51,8 +51,8 @@ end
 pro read_data,nfil,img,pfl,pfl2,pflr
 ;-----------------------------------------------------------
 
-nlng = 16 
-nr = 16 
+nlng = 24 
+nr = 24 
 
 ;sp-------
 filetype='PUV_'
@@ -186,7 +186,7 @@ stream = video.addvideostream(xsz, ysz, framerate)
 
 cnt = 0
 ts = 1
-for i = 100,300,ts do begin
+for i =  90,450,ts do begin
    w = window(window_title='torus',dimensions=[xsz,ysz],margin=0,$
               buffer=1)
    
@@ -200,12 +200,12 @@ for i = 100,300,ts do begin
 endfor
 
 ;w = window(dimensions=[600,1200],margin=[20,3,20,20])
-w = window(dimensions=[600,1200])
+w = window(dimensions=[600,1200],margin=[10,3,20,20])
 
 ind=1
 
 ;plot time series
-for i = 2,12,2   do begin
+for i = 2,17,3   do begin
    t = findgen(cnt)*ts
    L = pflr(i)
    whL = where(pflr eq L) 
@@ -213,7 +213,7 @@ for i = 2,12,2   do begin
 ;   p.xtitle='time (days)'
 ;   p.ytitle='Normalized $P_{UV}$'
 ;   p.title='L = '+strtrim(string(L),2)
-   v = 1.113
+   v = 1.225
    r = 6.0*7.14e4
    C = 2*!pi*r
    T = (C/v)/(60.*60.*24.)
@@ -223,8 +223,8 @@ for i = 2,12,2   do begin
    
    f = FFT_powerspectrum(pfl(whL),ts,FREQ=freq)
    wh = where(2*!pi*freq gt 0.05)
-   ps1=plot(2*!pi*freq(wh),f(wh),/ylog,layout=[1,9,ind],/current,$
-           margin=[0.12,0.21,0.05,0.1],$
+   ps1=plot(2*!pi*freq(wh),f(wh),/ylog,layout=[1,6,ind],/current,$
+           margin=[0.10,0.25,0.01,0.1],$
            xrange=[min(2*!pi*freq(wh)),max(3*!pi*freq(wh))/3],yrange=[1e-5,0.1],$
            font_size=12,/xsty,name='S+')
    ps1.title = 'L = '+strmid(strtrim(string(L),2),0,4)
@@ -251,7 +251,7 @@ for i = 2,12,2   do begin
 endfor   
    l = legend(target=[ps1,ps3])
    ps1.xtitle = 'Frequency (rad/day)'
-   t = text(0.225,0.011,'$\lambda_{IV}$',/data,orientation=90,font_size=16)
+   t = text(0.170,0.011,'$\lambda_{IV}$',/data,orientation=90,font_size=16)
    t = text(1.08,0.011,'$\lambda_{Io}$',/data,orientation=90,font_size=14)
    t = text(5.8,0.95,'S$^{+}$',/normal,font_size=18)
    t.Save,'fft.pdf'

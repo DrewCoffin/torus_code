@@ -1,5 +1,6 @@
 plots/**/*.dat
 !./inputs.dat
+plots/olddata/**
 **/*.jpeg
 **/*.jpg
 **/*.png
