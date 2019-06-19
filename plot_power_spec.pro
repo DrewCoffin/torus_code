@@ -51,8 +51,8 @@ end
 pro read_data,nfil,img,pfl,pfl2,pflr
 ;-----------------------------------------------------------
 
-nlng = 24 
-nr = 24 
+nlng = 20 
+nr = 20 
 
 ;sp-------
 filetype='PUV_'
@@ -186,7 +186,7 @@ stream = video.addvideostream(xsz, ysz, framerate)
 
 cnt = 0
 ts = 1
-for i =  90,450,ts do begin
+for i =400, 600,ts do begin
    w = window(window_title='torus',dimensions=[xsz,ysz],margin=0,$
               buffer=1)
    
@@ -205,7 +205,7 @@ w = window(dimensions=[600,1200],margin=[10,3,20,20])
 ind=1
 
 ;plot time series
-for i = 2,17,3   do begin
+for i = 2,14,3   do begin
    t = findgen(cnt)*ts
    L = pflr(i)
    whL = where(pflr eq L) 
