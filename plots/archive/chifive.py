@@ -41,6 +41,7 @@ def getOutput(output,run):
     #print data
     data=data.values
     data=transpose(data) 
+    if( day == 180 ): print data[1]
     output.append(data[1])
   output[0]=data[0]
   return 1    
@@ -85,18 +86,24 @@ outputs=[]
 filenames=["elecDens", "op", "o2p", "sp", "s2p", "s3p", "NL2", "elecTemp", "Tot"] 
 for name in filenames: open(name+'.dat', 'w').close()
 out=open("chi.dat", 'a')
-#s=[0.1, 0.25, 0.5, 0.75, 1.0, 2.0, 3.0, 4.0, 4.5, 5.0, 5.5, 6.0]
-s=[5.0,6.0,7.0,8.0,10.0]
-#dll=[0.5, 1.0, 2.0, 3.0, 4.5, 6.0, 7.5, 9.0, 10.5, 12.0, 15.0, 18.0]
-salph=[-12.0,-14.5]
-dll=[6.5,8.0,9.5,11.0,15.0]
-dllalph=[3.5,4.5,5.5]
-fhe=[0.002,0.003]
-fhealph=[3.5,5.0,7.0]
-#for s in {1.0, 2.0, 3.0, 4.0, 4.5, 5.0, 5.5, 6.0, 7.0}: #take from gatherData.py that generated the data
+with open("../../gatherData.py", 'r') as runfile:
+  content = runfile.readlines() #first line is content[0]
+s1 = content[36].strip('sourceArray=[').rstrip(']\n')
+s = s1.split(',')
+print(s)
+sAl1 = content[38].strip('sourceAlphaArray=[').rstrip(']\n')
+salph = sAl1.split(',')
+dll1 = content[41].strip('dllArray=[').rstrip(']\n')
+dll = dll1.split(',')
+dllAl1 = content[43].strip('dllAlphaArray=[').rstrip(']\n')
+dllalph = dll1.split(',')
+fhe1 = content[45].strip('fheArray=[').rstrip(']\n')
+fhe = fhe1.split(',')
+fheAl1 = content[47].strip('fheAlphaArray=[').rstrip(']\n')
+fhealph = fheAl1.split(',')
+print(len(fhealph))
 for i in range(0, len(s)) :
- # for dll in {3.0, 4.5, 6.0, 7.5, 9.0, 10.5, 12.0, 15.0, 18.0}:
-  for j in range(0, len(salph)) : #take from gatherData.py that generated the data
+  for j in range(0, len(salph)) :
     for k in range(0,len(dll)):
       for l in range(0,len(dllalph)):
         for m in range(0,len(fhe)):
@@ -104,21 +111,30 @@ for i in range(0, len(s)) :
             run='run-('+str(i)+', '+str(j)+', '+str(k)+', '+str(l)+', '+str(m)+', '+str(n)+')'
             #run="s="+str(s[j])+":dll="+str(dll[i])
             if(not os.path.exists("./"+run)): print "BAD", run
+#            if(os.path.exists("./"+run+"/s3p/MIXR/MIXRs3p0200rad.dat")): print "GOOD RUN", run
             O=copy.deepcopy(E)
             outputs=[]
-            #print O
+#            print O
+            print len(O)
+            print len(O[1])
+            print len(E)
             if(getOutput(outputs, run) and os.path.exists("./"+run)):
-              #print outputs
+              print len(outputs[0])
               O=modifyOutput(outputs, O) 
+#              print len(O)
+#              print len(E)
+#              print len(sig)
               chis=calculateChi(O, E, sig)
-              chis.append((sum(chis)-chis[0])/83.0)
-              #print chis
+              print chis
+              print len(chis)
+              chis.append((sum(chis)-chis[0])) #/83.0)
+  #            print chis
               #print O, '\n', E, '\n', "+++++++++++++++++++++++++++++++++++++++++++++"
               output(s[j], dll[i], chis, filenames)
             outputSpace(filenames)
-            #out=open("chi.dat", 'a')
-            #out.write('\n')
-            #out.close()
+  #           out=open("chi.dat", 'a')
+  #          out.write('\n')
+  #          out.close()
 
 os.popen("gnuplot plot.gnu")
 #print x

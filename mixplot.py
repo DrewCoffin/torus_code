@@ -49,6 +49,8 @@ days = range(int(sys.argv[1]), int(sys.argv[2])) #feeds in integer time step for
 output = []
 specs = ['sp', 's2p', 's3p', 'o2p'] #, 'op', 'elec']
 output = [getval(output, days, specs[i], 'plots/data', lng, int(sys.argv[3])) for i in range(len(specs))] #generates table of peak locations per time step
+adjust = 175 #per paper comments
+newdays = range(int(sys.argv[1])+adjust, int(sys.argv[2])+adjust) #feeds in integer time step for the file naming scheme
 #print output
 #print len(days), len(output[0])
 #Plot peak angle
@@ -58,25 +60,26 @@ fig = plt.figure(figsize = (2,1))
 plt.subplot(211)
 plt.title('Peak Mixing ratio location')      
 #plt.xlabel('Days')
-plt.xlim(int(sys.argv[1]), int(sys.argv[2]))
+plt.xlim(int(sys.argv[1])+adjust, int(sys.argv[2])+adjust)
 plt.ylabel('System III Angle')
 plt.ylim(-10,360)
-plt.scatter(days, output[0], marker='^', s=90, c = 'blue', label = specs[0])
-plt.scatter(days, output[1], marker='o', s=90, c = 'green', label = specs[1])
-plt.scatter(days, output[2], marker='o', s=90, c = 'orange', label = specs[2])
-plt.scatter(days, output[3], marker='^', s=90, c = 'red', label = specs[3])
-#plt.legend(loc=4)
+plt.scatter(newdays, output[0], marker='^', s=90, c = 'blue', label = specs[0])
+plt.scatter(newdays, output[1], marker='o', s=90, c = 'green', label = specs[1])
+plt.scatter(newdays, output[2], marker='o', s=90, c = 'orange', label = specs[2])
+plt.scatter(newdays, output[3], marker='^', s=90, c = 'red', label = specs[3])
+plt.legend(loc=4)
 
 plt.subplot(212)
-plt.xlabel('Days')
-plt.xlim(int(sys.argv[1]), int(sys.argv[2]))
+plt.xlabel('Days of Simulation')
+#plt.xlim(int(sys.argv[1]), int(sys.argv[2]))
+plt.xlim(int(sys.argv[1])+adjust, int(sys.argv[2])+adjust)
 plt.ylabel('System III Angle')
 plt.ylim(0,350)
-plt.scatter(days, output[0], marker='^', s=90, c = 'blue', label = specs[0])
-plt.scatter(days, output[1], marker='o', s=90, c = 'green', label = specs[1])
-plt.scatter(days, output[2], marker='o', s=90, c = 'orange', label = specs[2])
-plt.scatter(days, output[3], marker='^', s=90, c = 'red', label = specs[3])
-plt.legend(loc=4)
+plt.scatter(newdays, output[0], marker='^', s=90, c = 'blue', label = specs[0])
+plt.scatter(newdays, output[1], marker='o', s=90, c = 'green', label = specs[1])
+plt.scatter(newdays, output[2], marker='o', s=90, c = 'orange', label = specs[2])
+plt.scatter(newdays, output[3], marker='^', s=90, c = 'red', label = specs[3])
+#plt.legend(loc=4)
 
 fig.subplots_adjust(hspace=0)
 plt.show()

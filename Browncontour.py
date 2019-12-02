@@ -16,7 +16,7 @@ ax1.set_ylabel('L-shell (Rj)')
 aw, lw, fw = a[nca+ncl:nca+ncl+ncw], l[nca+ncl:nca+ncl+ncw], f[nca+ncl:nca+ncl+ncw]
 #print(lw)
 #X1, Y1 = np.mgrid[min(aw):max(aw):100j, min(lw):max(lw):100j]
-ax1.tricontour(aw, lw, fw) #, levels=10)
+ax1.tricontour(aw, lw, fw, 1000) #200 drawn contours
 concol1 = ax1.tricontourf(aw, lw, fw)
 #fig.colorbar(concol1, ax=ax1)
 ax1.plot(aw, lw, ' ')
@@ -28,7 +28,7 @@ ax2.set_title('L-shell of 7.2 Rj')
 ax2.set_xlabel('Amplitude (- km/s)')
 ax2.set_ylabel('FWHM (Rj)')   
 al, wl, fl = a[nca:nca+ncl], w[nca:nca+ncl], f[nca:nca+ncl]
-ax2.tricontour(al, wl, fl) #, levels=10)
+ax2.tricontour(al, wl, fl, 1000)
 concol2 = ax2.tricontourf(al, wl, fl)
 #fig.colorbar(concol2, ax=ax2)
 ax2.plot(al, wl, ' ') 
@@ -41,8 +41,8 @@ ax3.set_xlabel('L-shell (Rj)')
 ax3.set_ylabel('FWHM (Rj)')   
 la, wa, fa = l[:nca], w[:nca], f[:nca]
 #print(la, wa, fa)
-ax3.tricontour(la, wa, fa) #, levels=10)
-concol3 = ax3.tricontourf(la, wa, fa)
+ax3.tricontour(la, wa, fa, 1000)
+#concol3 = ax3.tricontourf(la, wa, fa)
 #fig.colorbar(concol3, ax=ax3)
 ax3.plot(la, wa, ' ') 
 ax3.set_xlim(min(la),max(la))
@@ -54,7 +54,7 @@ plt.tight_layout()
 
 fig.subplots_adjust(right=0.8)
 cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.75])
-cbar = fig.colorbar(concol3, cax=cbar_ax)
+cbar = fig.colorbar(concol1, cax=cbar_ax)
 cbar.set_label('% Deviation from corotation')
 
 plt.savefig('Browncontour.png')

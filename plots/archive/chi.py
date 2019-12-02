@@ -64,12 +64,14 @@ def calculateChi(O, E, sig):
     chis.append(chi)
   return chis
 
-def output(s, dll, chis, filenames):
+def output(s, salph, dll, dllalph, chis, filenames):
   for i in range(0, len(filenames)):
     out=open(filenames[i]+".dat", 'a')
     out.write(str(dll)+"e-7 ")
+    out.write(str(dllalph)+" ")
     out.write(str(s)+"e28 ")
-    out.write(str(chis[i])+'\n')
+    out.write(str(salph)+" ")
+    out.write(str(chis[i])) #+'\n')
     out.close()
 
 def outputSpace(filenames):
@@ -88,36 +90,71 @@ for name in filenames: open(name+'.dat', 'w').close()
 out=open("chi.dat", 'a')
 with open("../../gatherData.py", 'r') as runfile:
   content = runfile.readlines()
-s1=content[35].strip('sourceArray=[').rstrip(']\n')
-s=s1.split(', ')
+s1 = content[35].strip('sourceArray=[').rstrip(']\n')
+s = s1.split(',')
 for i in range(len(s)):
   s[i] = float(s[i])
-dll1=content[39].strip('dllArray=[').rstrip(']\n')
-dll=dll1.split(', ')
+sAl1 = content[37].strip('sourceAlphaArray=[').rstrip(']\n')
+salph = sAl1.split(',')
+for i in range(len(salph)):
+  salph[i] = float(salph[i])
+dll1 = content[39].strip('dllArray=[').rstrip(']\n')
+dll = dll1.split(',')
 for i in range(len(dll)):
   dll[i] = float(dll[i])
-print(s)
-print(dll)
-for i in range(0, len(dll)) :
-  for j in range(0, len(s)) :
-    run="s="+str(s[j])+":dll="+str(dll[i])
-    if(not os.path.exists("./"+run)): print "BAD", run
-    O=copy.deepcopy(E)
-    outputs=[]
+dllAl1 = content[41].strip('dllAlphaArray=[').rstrip(']\n')
+dllalph = dllAl1.split(',')
+for i in range(len(dllalph)):
+  dllalph[i] = float(dllalph[i])
+#print(dllalph)
+fhe1 = content[43].strip('fheArray=[').rstrip(']\n')
+fhe = fhe1.split(',')
+#print(fhe)
+for i in range(len(fhe)):
+  fhe[i] = float(fhe[i])
+fheAl1 = content[45].strip('fheAlphaArray=[').rstrip(']\n')
+fhealph = fheAl1.split(',')
+fhealph = [3.5]
+for i in range(len(fhealph)):
+  fhealph[i] = float(fhealph[i])
+#print(s)
+#print(dll)
+for i in range(0, len(s)) :
+  for j in range(0, len(salph)) :
+    for k in range(0,len(dll)):
+      for l in range(0,len(dllalph)):
+        for m in range(0,len(fhe)):
+          for n in range(0,len(fhealph)):
+            run='run-('+str(i)+', '+str(j)+', '+str(k)+', '+str(l)+', '+str(m)+', '+str(n)+')'
+            if(not os.path.exists("./"+run)): print "BAD", run
+#            print(E)
+            O=copy.deepcopy(E)
+            outputs=[]
+#            print('deepcopy successful')
 #    print(filenames)
-    if(not getOutput(outputs, run)): print "BAD Location", run
-    if(getOutput(outputs, run) and os.path.exists("./"+run)):
+            if(not getOutput(outputs, run)): print "BAD Location", run
+            if(getOutput(outputs, run) and os.path.exists("./"+run)):
 #      print(filenames)
-      O=modifyOutput(outputs, O) 
-      chis=calculateChi(O, E, sig)
-      chis.append((sum(chis)-chis[0])/83.0)
+#              print('output is ')
+#              print(outputs)
+#              print(O)
+              O=modifyOutput(outputs, O) 
+#              print(len(O[0]))
+              chis=calculateChi(O, E, sig)
+              chis.append((sum(chis)-chis[0])) #/83.0)
 #      print(filenames)
 #      print(chis)
 #      print O, '\n', E, '\n', "+++++++++++++++++++++++++++++++++++++++++++++"
-      output(s[j], dll[i], chis, filenames)
-  outputSpace(filenames)
+   #           print(s)
+  #            print(dll)
+#              print(chis)
+ #             print(len(chis))
+   #           print(filenames)
+    #          print(len(filenames))
+              output(s[i], salph[j], dll[k], dllalph[l], chis, filenames)
+            outputSpace(filenames)
   #out=open("chi.dat", 'a')
   #out.write('\n')
   #out.close()
 
-os.popen("gnuplot plot.gnu")
+#os.popen("gnuplot plot.gnu")

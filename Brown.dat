@@ -1,4 +1,4 @@
-####,Amplitude,Center,Width,Frequency,!!!!,
+####,Amplitude,Center,Width,Deviation%!!!!,
 #,,,,,
 ####,Constant,Amplitude,then,L-shell,then,FWHM,!!!
 3,6.6,0.4,0.33,5.2449219619,

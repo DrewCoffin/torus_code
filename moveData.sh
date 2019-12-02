@@ -7,6 +7,7 @@ mv TEMP*.dat plots/.
 mv NL2_*.dat plots/.
 mv LOAD*.dat plots/.
 mv MOUT*.dat plots/.
+mv TMSS*.dat plots/.
 mv VSUB*.dat plots/.
 #mv intensity*.dat plots/.  
 mv PUV*.dat plots/.
@@ -25,6 +26,7 @@ cd plots
   mv NL2_*.dat data/.
   mv LOAD*.dat data/.
   mv MOUT*.dat data/.
+  mv TMSS*.dat data/.
   mv PUV*.dat data/.
   mv VSUB*.dat data/.
   mv FEH*.dat data/.

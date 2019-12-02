@@ -28,22 +28,22 @@ def catalog(extension):
 os.popen("date >chirun.dat")
 i=0
 lng=2
-rad=18
+rad=16
 npes=lng*rad
 os.popen("./changeDimension.sh "+ str(rad) + " " + str(lng))
 os.popen("make clean")
 os.popen("make all")
-sourceArray=[0.1, 0.25, 0.5, 0.75, 1.0, 2.0, 3.0, 4.0, 4.5, 5.0, 5.5, 6.0]
+sourceArray=[0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1.0, 2.0, 3.0]
 lens=len(sourceArray)
-sourceAlphaArray=[-14.5] #, [-12.0, -14.5]
+sourceAlphaArray=[-5.0, -9.0, -12.0]
 lensa=len(sourceAlphaArray)
-dllArray=[0.5, 1.0, 2.0, 3.0, 4.5, 6.0, 7.5, 9.0, 10.5, 12.0, 15.0, 18.0]
+dllArray=[3.0, 4.5, 6.0, 7.5, 9.0]
 lend=len(dllArray)
-dllAlphaArray=[4.5] #[4.0, 4.5, 5.0, 5.5]
+dllAlphaArray=[4.5]
 lenda=len(dllAlphaArray)
-fheArray=[0.0020] #[0.0020, 0.0030]
+fheArray=[0.0020]
 lenf=len(fheArray)
-fheAlphaArray=[3.5] #[2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
+fheAlphaArray=[3.5] 
 lenfa=len(fheAlphaArray)
 runs=lens*lensa*lend*lenda*lenf*lenfa
 product=itertools.product(range(0,lens), range(0,lensa), range(0,lend), range(0,lenda), range(0,lenf), range(0,lenfa))

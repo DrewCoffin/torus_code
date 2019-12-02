@@ -38,6 +38,9 @@ if(.true.) then
   num_char=trim(x1)  !trim non-existent file and store as num_char
   !num_char can be used to name output files by grid space using "output"//num_char//".dat" 
 
+  print *, 'npes = ', npes
+  print *, 'LNG_GRID = ', LNG_GRID
+  print *, 'RAD_GRID = ', RAD_GRID
   if ( npes .ne. LNG_GRID*RAD_GRID ) then
     print *, "The current version only supports ", LNG_GRID*RAD_GRID, " processors."   
   else 
@@ -134,8 +137,11 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
  ! if( vrad ) v_ion=2.0-abs(rdist-6.8)
-  !if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/2.0**2) + 1.5*exp(-(rdist-7.2)**2/(0.70**2))!1.0-abs(rdist-6.8)
-  !if( vrad ) v_ion= 0.8*exp(-(rdist-7.2)**2/(0.5**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/2.0**2) + 2.2*exp(-(rdist-7.2)**2/(0.80**2))!1.0-abs(rdist-6.8)
+ ! if( vrad ) v_ion=2.00*exp(-(rdist-7.2)**2/2.0**2) !+ 1.5*exp(-(rdist-7.2)**2/(0.70**2))!1.0-abs(rdist-6.8)
+!  if( vrad ) v_ion= 0.8*exp(-(rdist-7.2)**2/(0.5**2))
+
+!1.0-abs(rdist-6.8)
 
   if( .not. vrad .and. .not. vmass) v_ion=1.05
   if( vrad .and. v_ion .lt. 0.0 ) v_ion=0.0
@@ -302,8 +308,8 @@ subroutine model()
 
   ntrop = entropy(n, T, h, ntroptot)
 
-  mass_loading(mype+1)=1e-33 !set to arbitarily small value
-  ave_loading=1e-33
+  mass_loading(mype+1)=1e-28 !set to arbitarily small value
+  ave_loading=1e-28 
 
 !-----------------------Interation loop-------------------------------------------------------------------------------------------------
   do i=1, nit
@@ -321,10 +327,10 @@ subroutine model()
   !  net_source = net_source0*(1.0 + neutral_amp*var) !Ubiquitous source
     if( moving_Io ) then
       if( mype .eq. int(Io_loc*LNG_GRID/torus_circumference) )then
-        net_source = 0.2*LNG_GRID*net_source0*(1.0+neutral_amp*var)
+        net_source = 0.3*LNG_GRID*net_source0*(1.0+neutral_amp*var)
       else
        ! if( i .eq. 1 ) then
-       net_source = 0.8*net_source0*(1.0+neutral_amp*var)
+       net_source = 0.8*net_source0*(1.0) !+neutral_amp*var) #make enhancement on Io
        ! else
         !  net_source=0
         !endif
@@ -360,12 +366,13 @@ subroutine model()
       elecHot_multiplier=elecHot_multiplier*(1+sys4_amp*cos(((mype/(LNG_GRID-1.0))-(sys4_loc/torus_circumference))*2.0*PI))
     endif
 
-!    if( vmass .and. mass_loading(mype+1) .gt. 0.0) then   !for Pontius equation
+    !if( vmass .and. mass_loading(mype+1) .gt. 0.0) then   !for Pontius equation
     if( vrad .and. abs(ave_dNL2_dL) .gt. 0.0) then   
       !print *, "average flux content gradient: ", abs(ave_dNL2_dL)
-!       elecHot_multiplier=elecHot_multiplier*(1.0+0.75*((mass_loading(mype+1)/ave_loading)-1.0))    
-      elecHot_multiplier=elecHot_multiplier*(1.0+0.8*((dNL2_dL(mype+1)/ave_dNL2_dL)-1.0))    
-!        elecHot_multiplier=elecHot_multiplier*(1.0+2.8*((nl2_tot(mype+1)/ave_nl2_tot)-1.0))    
+!      elecHot_multiplier=elecHot_multiplier*(1.0+0.80*((mass_loading(mype+1)/ave_loading)-1.0))    
+     ! elecHot_multiplier=elecHot_multiplier*(1.0+1.40*(ave_loading))    
+    !  elecHot_multiplier=elecHot_multiplier*(1.0+0.8*((dNL2_dL(mype+1)/ave_dNL2_dL)-1.0))    
+        elecHot_multiplier=elecHot_multiplier*(1.0+0.8*((nl2_tot(mype+1)/ave_nl2_tot)-1.0))    
 !       if (mype .eq. 1) then
 !          write(*,*) 'Hot electrons.....',elecHot_multiplier,mass_loading(mype+1),ave_loading
 !       endif
@@ -376,10 +383,12 @@ subroutine model()
 
 
 !----------------------Pontius subcorotation-------------------------------------------------------------------------------
+      SigmaP = 0.005 
+      radvar = 1.0*exp(-((rdist-6.0)/6.0)**2)
       if( vmass ) then
-        v_ion=1.0+(((ave_loading*volume*LNG_GRID)*57.0*(rdist)**5)/(1.0*sqrt(1.0-(1.0/(rdist)))*2.0*0.05*((Rj*1.0e3)**2)*(4.2e-4)**2))
-!        print *, 'ave_loading = ', ave_loading
-!        print *, 'v_ion = ', v_ion
+        v_ion=(((ave_loading*volume*LNG_GRID)*radvar*57.0*(rdist)**5)/(0.3*sqrt(1.0-(1.0/(rdist)))*4.0*PI*SigmaP*((Rj*1.0e3)**2)*(4.2e-4)**2))
+!        if( mype .eq. 0 ) print *, 'volumetric mass loading = ', ave_loading*volume*LNG_GRID
+!        print *, 'Pontius v_ion = ', v_ion
 !        n%fh=n%fh*((mass_loading(mype+1)/ave_loading)**(15.0)) !Should replace sys4 population.
       endif
 !----------------------Pontius subcorotation-------------------------------------------------------------------------------
@@ -515,6 +524,7 @@ subroutine model()
 !                 if( rdist < reac_off_dist ) call OtherOutput3D(200.0*mass_loading(mype+1)/ave_loading, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'LOAD')
                  call OtherOutput(mass_loading(mype+1)/ave_loading, longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'LOAD')
                  call OtherOutput3D(mass_loading(mype+1), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'LOAD')
+                 call OtherOutput3D(mass_loading(mype+1)*volume*LNG_GRID, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'TMSS')
                  call OtherOutput3D(v_ion, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'VSUB')
 !                 call OtherOutput3D(real(ntroptot), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'TENT')
 !                 call OtherOutput3D(nrgy%Puv_sp, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'PUV_')
@@ -526,6 +536,7 @@ subroutine model()
                  if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'LOAD')
                  if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'VSUB')
                  if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'MOUT')
+                 if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'TMSS')
  !                if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'TENT')
  !                if( j .eq. LNG_GRID ) call otherspacer3D(day_char, 'PUV_')
                  if( j .eq. LNG_GRID ) call Elecspacer3D(day_char, 'FEH_')
