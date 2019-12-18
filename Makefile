@@ -1,5 +1,5 @@
 COMP=mpiifort
-FLAGS=-O4
+FLAGS=-O4 
 %COMP=mpif90
 %FLAGS=-O2 -mmacosx-version-min=10.6
 

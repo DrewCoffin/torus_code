@@ -4,7 +4,7 @@
 3.0e28                source rate
 -14.5                 source exponent
 2.00                  o_to_s
-0.0025                hot electron fraction
+0.003                 hot electron fraction
 3.5                   fhe exponent
 6.0e-7                Dll
 4.5                   Dll exponent
@@ -18,7 +18,7 @@
 0.00                  hote_amp (0.05)
 269.0                 hote_t0
 60.0                  hote_width
-20                    days for the run
+5                     days for the run
 1.0                   number of outputs per day
 0.00                  s value for upwind scheme
 0.030                 initial radial velocity (km/s)

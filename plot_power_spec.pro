@@ -51,8 +51,8 @@ end
 pro read_data,nfil,img,pfl,pfl2,pflr
 ;-----------------------------------------------------------
 
-nlng = 16 
-nr = 16 
+nlng = 24 
+nr = 24 
 
 ;sp-------
 filetype='PUV_'
@@ -213,7 +213,7 @@ for i = 2,10,2   do begin
 ;   p.xtitle='time (days)'
 ;   p.ytitle='Normalized $P_{UV}$'
 ;   p.title='L = '+strtrim(string(L),2)
-   v = 1.5  
+   v = 1.22  
    r = 6.0*7.14e4
    C = 2*!pi*r
    T = (C/v)/(60.*60.*24.)
@@ -251,8 +251,8 @@ for i = 2,10,2   do begin
 endfor   
    l = legend(target=[ps1,ps3], position=[0.20,0.184])
    ps1.xtitle = 'Frequency (rad/day)'
-   t = text(0.272,2e-5,'$\lambda_{IV}$',/data,orientation=0,font_size=16)
-   t = text(1.07,0.03,'$\lambda_{Io}$',/data,orientation=0,font_size=14)
+   t = text(0.215,2e-5,'$\lambda_{IV}$',/data,orientation=0,font_size=16)
+   t = text(1.06,0.03,'$\lambda_{Io}$',/data,orientation=0,font_size=14)
    t = text(5.8,0.95,'S$^{+}$',/normal,font_size=18)
    t.Save,'fft.pdf'
 video.cleanup

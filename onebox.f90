@@ -38,9 +38,6 @@ if(.true.) then
   num_char=trim(x1)  !trim non-existent file and store as num_char
   !num_char can be used to name output files by grid space using "output"//num_char//".dat" 
 
-  print *, 'npes = ', npes
-  print *, 'LNG_GRID = ', LNG_GRID
-  print *, 'RAD_GRID = ', RAD_GRID
   if ( npes .ne. LNG_GRID*RAD_GRID ) then
     print *, "The current version only supports ", LNG_GRID*RAD_GRID, " processors."   
   else 
@@ -137,7 +134,7 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
  ! if( vrad ) v_ion=2.0-abs(rdist-6.8)
-  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/2.0**2) + 2.2*exp(-(rdist-7.2)**2/(0.80**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/2.0**2) + 1.5*exp(-(rdist-7.2)**2/(0.80**2))!1.0-abs(rdist-6.8)
  ! if( vrad ) v_ion=2.00*exp(-(rdist-7.2)**2/2.0**2) !+ 1.5*exp(-(rdist-7.2)**2/(0.70**2))!1.0-abs(rdist-6.8)
 !  if( vrad ) v_ion= 0.8*exp(-(rdist-7.2)**2/(0.5**2))
 
@@ -386,7 +383,8 @@ subroutine model()
       SigmaP = 0.005 
       radvar = 1.0*exp(-((rdist-6.0)/6.0)**2)
       if( vmass ) then
-        v_ion=(((ave_loading*volume*LNG_GRID)*radvar*57.0*(rdist)**5)/(0.3*sqrt(1.0-(1.0/(rdist)))*4.0*PI*SigmaP*((Rj*1.0e3)**2)*(4.2e-4)**2))
+        v_ion=(((ave_loading*volume*LNG_GRID)*radvar*57.0*(rdist)**5)/(0.3*sqrt(1.0-(1.0/(rdist)))*4.0*PI*&
+             SigmaP*((Rj*1.0e3)**2)*(4.2e-4)**2))
 !        if( mype .eq. 0 ) print *, 'volumetric mass loading = ', ave_loading*volume*LNG_GRID
 !        print *, 'Pontius v_ion = ', v_ion
 !        n%fh=n%fh*((mass_loading(mype+1)/ave_loading)**(15.0)) !Should replace sys4 population.
@@ -503,7 +501,8 @@ subroutine model()
 
     call energyBudget(n, h, T, dep, ind, ft, lat, v, nrgy)
 
-    if (nint(output_it)+1 .eq. i .and. (OUTPUT_MIXR .or. OUTPUT_DENS .or. OUTPUT_TEMP .or. OUTPUT_INTS .or. OUTPUT_PUV .or. OUTPUT_ENTR)) then !Output at set intervals when OUTPUT_MIX is true (from debug.f90)
+    if (nint(output_it)+1 .eq. i .and. (OUTPUT_MIXR .or. OUTPUT_DENS .or. OUTPUT_TEMP .or. OUTPUT_INTS &
+      .or. OUTPUT_PUV .or. OUTPUT_ENTR)) then !Output at set intervals when OUTPUT_MIX is true (from debug.f90)
         miscOutput=mass_loading(mype+1)
         day = (i-1.0)*dt/86400
         write (x1, '(I4.4)') file_num
@@ -522,14 +521,19 @@ subroutine model()
                   longitude, rdist, day_char, 'DENS')
 !                 if( rdist < reac_off_dist ) call OtherOutput(200.0*mass_loading(mype+1)/ave_loading, longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'LOAD')
 !                 if( rdist < reac_off_dist ) call OtherOutput3D(200.0*mass_loading(mype+1)/ave_loading, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'LOAD')
-                 call OtherOutput(mass_loading(mype+1)/ave_loading, longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'LOAD')
-                 call OtherOutput3D(mass_loading(mype+1), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'LOAD')
-                 call OtherOutput3D(mass_loading(mype+1)*volume*LNG_GRID, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'TMSS')
-                 call OtherOutput3D(v_ion, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'VSUB')
+                 call OtherOutput(mass_loading(mype+1)/ave_loading, &
+                  longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'LOAD')
+                 call OtherOutput3D(mass_loading(mype+1), &
+                  longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'LOAD')
+                 call OtherOutput3D(mass_loading(mype+1)*volume*LNG_GRID, &
+                  longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'TMSS')
+                 call OtherOutput3D(v_ion, longitude+((j+1)/(LNG_GRID+1))*360.0, &
+                  rdist, day_char, 'VSUB')
 !                 call OtherOutput3D(real(ntroptot), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'TENT')
 !                 call OtherOutput3D(nrgy%Puv_sp, longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'PUV_')
                  call OtherOutput(real(miscOutput), longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'MOUT')
-                 call OtherOutput3D(real(miscOutput), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'MOUT')
+                 call OtherOutput3D(real(miscOutput), &
+                  longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'MOUT')
                  call ElecOutput3D(real(n%fh), longitude+((j+1)/(LNG_GRID+1))*360.0, rdist, day_char, 'FEH_')
 !		print *, real(n%fh), rdist, longitude+((j+1)/(LNG_GRID+1))*360.0, day_char
                  if( j .eq. LNG_GRID ) call spacer3D(day_char, 'DENS')
@@ -585,9 +589,12 @@ subroutine model()
                 if( j .eq. LNG_GRID ) call spacer3D(day_char, 'PUV_')
               end if
               if(OUTPUT_ENTR) then 
-                 call IonElecOutput(ntrop%sp, ntrop%s2p, ntrop%s3p, ntrop%op, ntrop%o2p, ntrop%elec, & longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'ENTR')
-                 call IonElecOutput3D(ntrop%sp, ntrop%s2p, ntrop%s3p, ntrop%op, ntrop%o2p, ntrop%elec, & longitude, rdist, day_char, 'ENTR')
-!                 call IonElecOutput(nl2e%sp, nl2e%s2p, nl2e%s3p, nl2e%op, nl2e%o2p, nl2e%elec, & longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'ENTR')
+                 call IonElecOutput(ntrop%sp, ntrop%s2p, ntrop%s3p, ntrop%op, ntrop%o2p, ntrop%elec, & 
+                    longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'ENTR')
+                 call IonElecOutput3D(ntrop%sp, ntrop%s2p, ntrop%s3p, ntrop%op, ntrop%o2p, ntrop%elec, & 
+                    longitude, rdist, day_char, 'ENTR')
+!                 call IonElecOutput(nl2e%sp, nl2e%s2p, nl2e%s3p, nl2e%op, nl2e%o2p, nl2e%elec, & 
+!                    longitude+((j+1)/(LNG_GRID+1))*360.0, day_char, 'ENTR')
 !                 call IonElecOutput3D(nl2e%sp, nl2e%s2p, nl2e%s3p, nl2e%op, nl2e%o2p, nl2e%elec, & longitude, rdist, day_char, 'ENTR')
                 if( j .eq. LNG_GRID ) call spacer3D(day_char, 'ENTR')
               end if
