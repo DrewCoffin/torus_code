@@ -21,3 +21,5 @@ This code uses numerical methods which have certain criteria for stability. Chan
 ulimit -n 4096 ; to run more than 18x18 processors
 
 Git commit 66610bc has old commit information 
+
+doi:10.5281/zenodo.3583472

@@ -108,6 +108,7 @@ subroutine model()
   volume=PI*((((rdist*Rj+dr/2.0)*1.0e5))**2 - ((rdist*Rj-dr/2.0)*1.0e5)**2)*0.5*ROOTPI*Rj*1.0e5/LNG_GRID
 !  volume=dr*dx*1.0e10*ROOTPI*Rj*.5*1.0e5
 !  source=source/volume
+  print *, 'source = ', source
   net_source = source * (rdist/6.0)**source_exp
 !  source = source*((6.0**source_exp)*(source_exp+1.0))/((9.0**(source_exp+1.0))-(6.0**(source_exp+1.0)))
 !  net_source= (source/((6.0**source_exp)*(source_exp+1.0)*(dr/Rj)))*((rdist+(dr/Rj))**(source_exp+1.0) - (rdist**(source_exp+1.0)))
@@ -134,7 +135,7 @@ subroutine model()
 
 !----------------------vrad-------------------------------------------------------------------------------
  ! if( vrad ) v_ion=2.0-abs(rdist-6.8)
-  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/2.0**2) + 1.5*exp(-(rdist-7.2)**2/(0.80**2))!1.0-abs(rdist-6.8)
+  if( vrad ) v_ion=1.05*exp(-(rdist-6.0)**2/2.0**2) + 1.2*exp(-(rdist-7.2)**2/(0.60**2))!1.0-abs(rdist-6.8)
  ! if( vrad ) v_ion=2.00*exp(-(rdist-7.2)**2/2.0**2) !+ 1.5*exp(-(rdist-7.2)**2/(0.70**2))!1.0-abs(rdist-6.8)
 !  if( vrad ) v_ion= 0.8*exp(-(rdist-7.2)**2/(0.5**2))
 

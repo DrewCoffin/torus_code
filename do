@@ -1,7 +1,7 @@
 #!/bin/bash
 
 lng=20 
-rad=12 
+rad=20 
 npes=$(($rad * $lng))
 days=$( cat inputs.dat | head -n 21 | tail -n 1 | head -c 3 )
 

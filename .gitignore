@@ -17,4 +17,7 @@ plots/archive/dlla=**
 SysIVFFTs/**
 *.pdf
 *~
+*.avi
+*.mp4
+*.png
 oldffts/**
