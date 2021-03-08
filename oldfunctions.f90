@@ -1025,7 +1025,7 @@ end function az_loss
 
     ipTot= 2.0 * ipPer * n%elec /3.0
 
-    EF_elec= Teq - (2.0 * rad / 3.0) - ipTot !- (v_r0/dr * n%elec * T%elec) 
+    EF_elec= Teq - (2.0 * rad / 3.0)! - ipTot !- (v_r0/dr * n%elec * T%elec) 
 
 !    if(mype .eq. 0) print *, rdist, EF_elec, Teq, (2.0*rad/3.0)!, "ipTot: ", ipTot
  
