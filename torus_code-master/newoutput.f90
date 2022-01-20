@@ -25,70 +25,6 @@ character(len=4) ::quantity, day_char
 
 end subroutine IonOutput
 
-SUBROUTINE AllSpecOutput(sp, s2p, s3p, op, o2p, elec, s, o, longitude, day_char, quantity)
-double precision ::sp, s2p, s3p, op, o2p, elec, s, o
-real             ::longitude 
-character(len=4) ::quantity, day_char 
-     
-  open(unit=101, file=''//quantity//'sp'//day_char//'_1D.dat' , status='unknown', position='append')
-  open(unit=102, file=''//quantity//'s2p'//day_char//'_1D.dat', status='unknown', position='append')
-  open(unit=103, file=''//quantity//'s3p'//day_char//'_1D.dat', status='unknown', position='append')
-  open(unit=104, file=''//quantity//'op'//day_char//'_1D.dat' , status='unknown', position='append')
-  open(unit=105, file=''//quantity//'o2p'//day_char//'_1D.dat', status='unknown', position='append')
-  open(unit=106, file=''//quantity//'elec'//day_char//'_1D.dat', status='unknown', position='append')
-  open(unit=107, file=''//quantity//'s_'//day_char//'_1D.dat', status='unknown', position='append')
-  open(unit=108, file=''//quantity//'o_'//day_char//'_1D.dat', status='unknown', position='append')
-  write(101,*) longitude, sp
-  write(102,*) longitude, s2p
-  write(103,*) longitude, s3p
-  write(104,*) longitude, op
-  write(105,*) longitude, o2p
-  write(106,*) longitude, elec
-  write(107,*) longitude, s
-  write(108,*) longitude, o
-  close(101)
-  close(102)
-  close(103)
-  close(104)
-  close(105)
-  close(106)
-  close(107)
-  close(108)
-
-end subroutine AllSpecOutput
-
-SUBROUTINE AllSpecOutput3D(sp, s2p, s3p, op, o2p, elec, s, o, longitude, rdist, day_char, quantity)
-double precision ::sp, s2p, s3p, op, o2p, elec, s, o
-real             ::longitude, rdist 
-character(len=4) ::quantity, day_char 
-     
-  open(unit=101, file=''//quantity//'sp'//day_char//'_3D.dat' , status='unknown', position='append')
-  open(unit=102, file=''//quantity//'s2p'//day_char//'_3D.dat', status='unknown', position='append')
-  open(unit=103, file=''//quantity//'s3p'//day_char//'_3D.dat', status='unknown', position='append')
-  open(unit=104, file=''//quantity//'op'//day_char//'_3D.dat' , status='unknown', position='append')
-  open(unit=105, file=''//quantity//'o2p'//day_char//'_3D.dat', status='unknown', position='append')
-  open(unit=106, file=''//quantity//'elec'//day_char//'_3D.dat', status='unknown', position='append')
-  open(unit=107, file=''//quantity//'s_'//day_char//'_3D.dat', status='unknown', position='append')
-  open(unit=108, file=''//quantity//'o_'//day_char//'_3D.dat', status='unknown', position='append')
-  write(101,*) MOD(longitude,360.0), sp  , rdist
-  write(102,*) MOD(longitude,360.0), s2p , rdist
-  write(103,*) MOD(longitude,360.0), s3p , rdist
-  write(104,*) MOD(longitude,360.0), op  , rdist
-  write(105,*) MOD(longitude,360.0), o2p , rdist
-  write(106,*) MOD(longitude,360.0), elec, rdist  
-  write(107,*) MOD(longitude,360.0), s, rdist  
-  write(108,*) MOD(longitude,360.0), o, rdist  
-  close(101)
-  close(102)
-  close(103)
-  close(104)
-  close(105)
-  close(106)
-  close(107)
-  close(108)
-
-end subroutine AllSpecOutput3D
-
 SUBROUTINE IonElecOutput(sp, s2p, s3p, op, o2p, elec, longitude, day_char, quantity)
 double precision ::sp, s2p, s3p, op, o2p, elec
 real             ::longitude 
@@ -116,7 +52,7 @@ character(len=4) ::quantity, day_char
 end subroutine IonElecOutput
 
 SUBROUTINE IonElecOutput3D(sp, s2p, s3p, op, o2p, elec, longitude, rdist, day_char, quantity)
-double precision ::sp, s2p, s3p, op, o2p, elec
+double precision ::sp, s2p, s3p, op, o2p, elec, nin, nout
 real             ::longitude, rdist 
 character(len=4) ::quantity, day_char 
      
@@ -126,7 +62,9 @@ character(len=4) ::quantity, day_char
   open(unit=104, file=''//quantity//'op'//day_char//'_3D.dat' , status='unknown', position='append')
   open(unit=105, file=''//quantity//'o2p'//day_char//'_3D.dat', status='unknown', position='append')
   open(unit=106, file=''//quantity//'elec'//day_char//'_3D.dat', status='unknown', position='append')
+  write(101,*) 0.0, nin%sp, IN_LIM-dr/rJ 
   write(101,*) MOD(longitude,360.0), sp  , rdist
+  write(101,*) 0.0, nout%sp, OUT_LIM+dr/rJ 
   write(102,*) MOD(longitude,360.0), s2p , rdist
   write(103,*) MOD(longitude,360.0), s3p , rdist
   write(104,*) MOD(longitude,360.0), op  , rdist
@@ -185,24 +123,18 @@ character(len=4) ::quantity, day_char
   open(unit=104, file=''//quantity//'op'//day_char//'_3D.dat' , status='unknown', position='append')
   open(unit=105, file=''//quantity//'o2p'//day_char//'_3D.dat', status='unknown', position='append')
   open(unit=106, file=''//quantity//'elec'//day_char//'_3D.dat', status='unknown', position='append')
-  open(unit=107, file=''//quantity//'s_'//day_char//'_3D.dat', status='unknown', position='append')
-  open(unit=108, file=''//quantity//'o_'//day_char//'_3D.dat', status='unknown', position='append')
   write(101,*) ""
   write(102,*) "" 
   write(103,*) "" 
   write(104,*) "" 
   write(105,*) "" 
   write(106,*) "" 
-  write(107,*) "" 
-  write(108,*) "" 
   close(101)
   close(102)
   close(103)
   close(104)
   close(105)
   close(106)
-  close(107)
-  close(108)
 
 end subroutine spacer3D
 
