@@ -590,7 +590,7 @@ subroutine transport_flux(n, t, DLL0, DLL_alpha, h, mdot)
 
   tout=200.0 !eV
   tin=70.0   !eV
-
+ 
   r0=6.0 !in Rj
   rout=rdist+(dr/Rj)
   dll=DLL0*(rout/r0)**DLL_alpha
