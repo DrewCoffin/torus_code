@@ -37,7 +37,7 @@ MODULE ReadEmis
 
     do i=1, EMIS_SIZE
       do j=1, EMIS_SIZE
-        read(10,*), emis(j, i)
+        read(10,*) emis(j, i)
       end do
     end do
    

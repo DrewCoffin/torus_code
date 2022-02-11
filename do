@@ -1,7 +1,7 @@
 #!/bin/bash
 
-lng=20 
-rad=20 
+lng=16
+rad=48 
 npes=$(($rad * $lng))
 days=$( cat inputs.dat | head -n 21 | tail -n 1 | head -c 3 )
 
@@ -16,7 +16,7 @@ if [ $? -eq 0 ]
 
   echo "Model Compiled"
   date
-  time mpirun -n $npes ./torus > runlog
+  time mpirun -n $npes --oversubscribe ./torus > runlog
    
   if [ $? -ge 0 ] 
     then 

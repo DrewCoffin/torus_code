@@ -1,7 +1,7 @@
-COMP=mpiifort
-FLAGS=-O4 
-%COMP=mpif90
-%FLAGS=-O2 -mmacosx-version-min=10.6
+%COMP=mpiifort
+%FLAGS=-O4 
+COMP=mpif90
+FLAGS=-O2 
 
 OBJECTS=functions.o debug.o reactions.o varTypes.o global.o cfit.o rrfit.o dielectronic.o \
   timeStep.o readEmis.o inputs.o ftmix.o para.o output.o diffusion.o dimensions.o

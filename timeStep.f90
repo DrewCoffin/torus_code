@@ -279,7 +279,6 @@ MODULE TIMESTEP
     call dependent_rates(dep, ind, n, T, h)
 
     call cm3_reactions(ind, dep, h, n, ft, z)
- 
     call lat_distribution(n, h, lat)
     
     call updateNu(v, lat, T, n%elecHot)
@@ -308,9 +307,10 @@ MODULE TIMESTEP
 !    print *, rdist, Tp%elecHot, n%fh
 !    if(mype .eq. 0) print *, "+++++++++++++++++++++++++++"
 
+    !print *, T%sp, h%sp
 !    print *, rdist, EFelec
     call get_scale_heights(h, Tp, np)
-
+    !print *, T%sp, h%sp
 !    if(mype .eq. 0) print *, T%sp, T1%sp, Tp%sp
 
     n = np

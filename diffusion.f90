@@ -208,7 +208,7 @@ end subroutine transport_species
 function NLsquared(n, T, NLsquarede, h)
 
   integer            ::numBin, i, mid
-  parameter(numBin=186)
+  parameter(numBin=181)
   type(density)      ::nar(numBin),NLsquared, NLsquarede, n
   type(temp)         ::T
   type(height)       ::h
@@ -285,7 +285,7 @@ end function NLsquared
 function entropy(n, T, h, ntroptot)
 
   integer            ::numBin, i, mid
-  parameter(numBin=186)
+  parameter(numBin=181)
   type(density)      ::nar(numBin),n
   type(nT)           ::entropy
   type(temp)         ::T
@@ -437,7 +437,7 @@ subroutine cm3_expand(n, nar, T, max_theta)
 
   integer          ::numSpec, numBin, maxIter, i, j, k
   parameter(numSpec=7)
-  parameter(numBin=186)
+  parameter(numBin=181)
   type(density)    ::n, nar(numBin)
   type(temp)       ::T
   real             ::A(numSpec), Z(numSpec), n0(numSpec), Tarr(numSpec)

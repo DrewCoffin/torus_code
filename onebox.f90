@@ -175,7 +175,6 @@ subroutine model()
   T%elec    = Te0
   T%elecHot = Teh0
   
-
 !get scale heights 
   call get_scale_heights(h, T, n)
 
@@ -248,7 +247,6 @@ subroutine model()
   file_num=0    !Output files are numbered so they can be assembled as a animated visualization (refer to scripts)
 
   nl2=NLsquared(n, T, nl2e, h)
-
   ntrop = entropy(n, T, h, ntroptot)
 
   mass_loading(mype+1)=1e-28 !set to arbitarily small value
@@ -352,13 +350,12 @@ subroutine model()
     if ( DEBUG_GEN ) then !this variable set in debug.f90
       call DebugOutput(i, n, h, T, v, nrg)
     endif
-    
+
     if( rdist < reac_off_dist ) then
       call cm3_latavg_model(n, T, nrg, h, v, ni, Ti, nTi, hi &
                          ,vi, np, Tp, nTp, ind, dep, depi, lat, lati, ft, zoff) 
-
       call update_temp(n, nrg, T)
-    
+
     else
 
        mass_loading(mype+1)=0.0
